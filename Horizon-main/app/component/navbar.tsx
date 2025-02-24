@@ -19,22 +19,21 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setIsScrolled(true)
-      } else {
-        setIsScrolled(false)
+      const scrolled = window.scrollY > 0;
+      if (scrolled !== isScrolled) {
+        setIsScrolled(scrolled);
       }
-    }
+    };
 
-    // Check if user is logged in
-    const accessToken = localStorage.getItem('accessToken')
-    setIsLoggedIn(!!accessToken)
+    // Use passive listener for better performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Check login status
+    const accessToken = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!accessToken);
 
-    window.addEventListener("scroll", handleScroll)
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isScrolled]);
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -46,7 +45,9 @@ export function Navbar() {
   ]
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-black/90 backdrop-blur-xl shadow-2xl shadow-orange-500/10' : 'bg-transparent'}`}>
+    <nav className={`fixed top-0 w-full z-50 ${
+      isScrolled ? 'bg-black/90 backdrop-blur-sm shadow-md' : 'bg-transparent'
+    }`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
@@ -67,11 +68,10 @@ export function Navbar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-base text-white/90 hover:text-white transition-all duration-300 font-medium relative group"
+                className="text-base text-white/90 hover:text-white transition-colors duration-200 font-medium relative group"
               >
-                <span className="relative z-10">{item.label}</span>
-                <span className="absolute inset-x-0 -bottom-2 h-0.5 bg-gradient-to-r from-orange-500 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-                <span className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-blue-600/10 rounded-lg opacity-0 group-hover:opacity-100 -z-10 transition-opacity duration-300"></span>
+                <span>{item.label}</span>
+                <span className="absolute inset-x-0 -bottom-2 h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
               </Link>
             ))}
           </div>
@@ -88,7 +88,7 @@ export function Navbar() {
             ) : (
               <>
                 <Button 
-                  className="hidden sm:inline-flex items-center text-sm bg-gradient-to-r from-orange-500 to-blue-600 text-white hover:from-blue-600 hover:to-orange-500 px-6 py-5 rounded-xl shadow-lg shadow-orange-500/20 hover:shadow-blue-600/30 transition-all duration-300 transform hover:scale-105 font-semibold" 
+                  className="hidden sm:inline-flex items-center text-sm bg-gradient-to-r from-orange-500 to-blue-600 text-white hover:opacity-90 px-6 py-5 rounded-xl transition-opacity duration-200"
                   onClick={() => router.push('/Signup')}
                 >
                   Sign Up <ChevronRight className="ml-2 w-4 h-4" />

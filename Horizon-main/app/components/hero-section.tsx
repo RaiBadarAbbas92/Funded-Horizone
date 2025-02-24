@@ -146,46 +146,43 @@ export default function Hero() {
   const [showTradingModal, setShowTradingModal] = useState(false)
   const [profitCounter, setProfitCounter] = useState(250)
 
-  // Increment profit counter
+  // Optimize animation intervals
   useEffect(() => {
     const interval = setInterval(() => {
       setProfitCounter(prev => prev + Math.floor(Math.random() * 5))
-    }, 3000)
+    }, 5000)
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <section className="relative min-h-screen pt-16 md:pt-24 overflow-hidden bg-[#0A1428] flex items-center justify-center">
-      {/* Professional Background Effects */}
+    <section className="relative min-h-screen pt-0 sm:pt-24 overflow-hidden bg-[#0A1428] flex items-start sm:items-center justify-center">
+      {/* Simplified background effects */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
         <motion.div
           animate={{
             opacity: [0.1, 0.15, 0.1],
-            scale: [1, 1.1, 1],
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 -right-1/4 w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-gradient-to-br from-orange-500/20 to-transparent rounded-full blur-[120px]"
+          transition={{ duration: 10 }}
+          className="absolute top-0 -right-1/4 w-[200px] md:w-[800px] h-[200px] md:h-[800px] bg-gradient-to-br from-orange-500/20 to-transparent rounded-full blur-[40px] md:blur-[80px]"
         />
         <motion.div
           animate={{
             opacity: [0.1, 0.15, 0.1],
-            scale: [1.1, 1, 1.1],
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-          className="absolute -bottom-1/4 -left-1/4 w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-gradient-to-tr from-blue-600/20 to-transparent rounded-full blur-[120px]"
+          transition={{ duration: 10, delay: 5 }}
+          className="absolute -bottom-1/4 -left-1/4 w-[200px] md:w-[800px] h-[200px] md:h-[800px] bg-gradient-to-tr from-blue-600/20 to-transparent rounded-full blur-[40px] md:blur-[80px]"
         />
       </div>
 
-      {/* Add Trading Background Elements */}
+      {/* Reduce number of animated candlesticks */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Animated Candlesticks */}
         <div className="absolute inset-0 opacity-5">
-          {tradingChartElements.map((element) => (
+          {tradingChartElements.slice(0, 3).map((element) => (
             element.type === 'candle' ? (
               <motion.div
                 key={element.id}
-                className={`absolute w-2 md:w-3 ${element.isUp ? 'bg-green-500' : 'bg-red-500'}`}
+                className={`absolute w-1 md:w-3 ${element.isUp ? 'bg-green-500' : 'bg-red-500'}`}
                 style={{
                   height: element.height,
                   left: `${Math.random() * 100}%`,
@@ -205,7 +202,7 @@ export default function Hero() {
                 key={element.id}
                 className="absolute h-px bg-blue-500"
                 style={{
-                  width: '50px',
+                  width: '25px',
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`
                 }}
@@ -222,15 +219,15 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Add Floating Numbers */}
+      {/* Reduce number of floating numbers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {floatingNumbers.map((number) => (
+        {floatingNumbers.slice(0, 5).map((number) => (
           <motion.div
             key={number.id}
-            className="absolute text-orange-500/20 font-mono text-xs md:text-sm"
+            className="absolute text-orange-500/20 font-mono text-[10px] md:text-sm"
             style={{ left: `${number.x}%`, top: `${number.y}%` }}
             animate={{
-              y: [0, -100],
+              y: [0, -50],
               opacity: [0, 1, 0],
             }}
             transition={{
@@ -249,14 +246,14 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute top-20 md:top-32 left-4 md:left-10 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 p-3 md:p-4 rounded-xl border border-orange-500/20 backdrop-blur-sm"
+        className="absolute top-16 md:top-32 left-2 md:left-10 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 p-2 md:p-4 rounded-lg md:rounded-xl border border-orange-500/20 backdrop-blur-sm hidden md:block"
       >
-        <div className="text-xs md:text-sm text-gray-400">Total Trader Profits</div>
-        <div className="text-xl md:text-2xl font-bold text-orange-500">
+        <div className="text-[10px] md:text-sm text-gray-400">Total Trader Profits</div>
+        <div className="text-lg md:text-2xl font-bold text-orange-500">
           ${profitCounter.toLocaleString()}M+
         </div>
-        <div className="flex items-center gap-2 text-green-500 text-xs md:text-sm">
-          <TrendingUp className="w-3 h-3 md:w-4 md:h-4" />
+        <div className="flex items-center gap-1 md:gap-2 text-green-500 text-[10px] md:text-sm">
+          <TrendingUp className="w-2 h-2 md:w-4 md:h-4" />
           <span>Live Updates</span>
         </div>
       </motion.div>
@@ -265,31 +262,31 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute top-20 md:top-32 right-4 md:right-10 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 p-3 md:p-4 rounded-xl border border-orange-500/20 backdrop-blur-sm"
+        className="absolute top-16 md:top-32 right-2 md:right-10 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 p-2 md:p-4 rounded-lg md:rounded-xl border border-orange-500/20 backdrop-blur-sm hidden md:block"
       >
-        <div className="text-xs md:text-sm text-gray-400">Active Traders</div>
-        <div className="text-xl md:text-2xl font-bold text-orange-500">12,458</div>
-        <div className="flex items-center gap-2 text-green-500 text-xs md:text-sm">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+        <div className="text-[10px] md:text-sm text-gray-400">Active Traders</div>
+        <div className="text-lg md:text-2xl font-bold text-orange-500">12,458</div>
+        <div className="flex items-center gap-1 md:gap-2 text-green-500 text-[10px] md:text-sm">
+          <div className="w-1 h-1 md:w-2 md:h-2 bg-green-500 rounded-full animate-pulse" />
           <span>Online Now</span>
         </div>
       </motion.div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-2 md:px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center">
+          <div className="text-center mt-8 sm:mt-0">
             {/* Trust Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 md:gap-4 px-4 md:px-8 py-2 md:py-4 rounded-full bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 border border-orange-500/20 backdrop-blur-sm mb-8 md:mb-16 shadow-xl shadow-orange-500/5 hover:shadow-orange-500/10 transition-all duration-300"
+              className="inline-flex items-center gap-1 md:gap-4 px-3 md:px-8 py-1 md:py-4 rounded-full bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 border border-orange-500/20 backdrop-blur-sm mb-4 md:mb-16 shadow-xl shadow-orange-500/5 hover:shadow-orange-500/10 transition-all duration-300"
             >
-              <Shield className="w-4 h-4 md:w-6 md:h-6 text-orange-500" />
-              <span className="text-sm md:text-base font-bold text-white">
+              <Shield className="w-3 h-3 md:w-6 md:h-6 text-orange-500" />
+              <span className="text-xs md:text-base font-bold text-white">
                 Trusted by <span className="text-orange-500">50,000+</span> Traders Worldwide
               </span>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50" />
+              <div className="w-1 h-1 md:w-2 md:h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50" />
             </motion.div>
 
             {/* Main Heading */}
@@ -297,13 +294,13 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 md:mb-12 tracking-tight px-2 sm:px-0"
+              className="text-5xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 md:mb-12 tracking-tight px-1 sm:px-0"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="relative mb-6 md:mb-8 inline-block"
+                className="relative mb-3 md:mb-8 inline-block"
               >
                 <motion.span
                   className="block bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 bg-clip-text text-transparent bg-[length:200%_auto] font-extrabold tracking-tight drop-shadow-2xl"
@@ -316,29 +313,59 @@ export default function Hero() {
                 </motion.span>
                 <div className="absolute inset-0 blur-3xl bg-orange-500/10 -z-10" />
               </motion.div>
-
-              {/* Enhanced Subheading */}
-             
             </motion.h1>
+
+            {/* Mobile Description */}
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-gray-400 text-lg mb-8 px-4 block sm:hidden"
+            >
+              Join the elite community of funded traders. Get up to $2.5M in trading capital, 
+              enjoy up to 90% profit splits, and trade with confidence using our cutting-edge platform.
+              <span className="block mt-4 text-orange-500 font-semibold">
+                No hidden fees. No time limits. Pure trading freedom.
+              </span>
+            </motion.p>
+
+            {/* Mobile-only Features List */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="grid grid-cols-2 gap-4 px-4 mb-8 block sm:hidden"
+            >
+              <div className="bg-[#1E3A5F]/30 p-4 rounded-xl border border-orange-500/20 backdrop-blur-sm">
+                <Award className="w-8 h-8 text-orange-500 mb-2" />
+                <h3 className="text-white font-semibold mb-1">Top Tier Platform</h3>
+                <p className="text-gray-400 text-sm">Advanced tools for serious traders</p>
+              </div>
+              <div className="bg-[#1E3A5F]/30 p-4 rounded-xl border border-orange-500/20 backdrop-blur-sm">
+                <Globe className="w-8 h-8 text-orange-500 mb-2" />
+                <h3 className="text-white font-semibold mb-1">Global Access</h3>
+                <p className="text-gray-400 text-sm">Trade from anywhere, anytime</p>
+              </div>
+            </motion.div>
 
             {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6 mb-16 md:mb-32 px-4"
+              className="flex flex-col sm:flex-row justify-center gap-2 md:gap-6 mb-8 md:mb-32 px-2 md:px-4"
             >
               <Button 
-                className="group px-6 md:px-8 py-4 md:py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-lg md:text-xl font-semibold shadow-xl shadow-orange-500/20 transition-all duration-300 hover:scale-105 hover:shadow-orange-500/30 w-full sm:w-auto"
+                className="group px-4 md:px-8 py-3 md:py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg md:rounded-xl text-base md:text-xl font-semibold shadow-xl shadow-orange-500/20 transition-all duration-300 hover:scale-105 hover:shadow-orange-500/30 w-full sm:w-auto"
               >
                 Start Trading Now
-                <ChevronRight className="ml-2 w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
+                <ChevronRight className="ml-1 md:ml-2 w-4 h-4 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
               <Button 
-                className="group px-6 md:px-8 py-4 md:py-6 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 hover:from-[#1E3A5F]/70 hover:to-[#1E3A5F]/50 text-white rounded-xl text-lg md:text-xl font-semibold border border-[#1E3A5F] hover:border-orange-500/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full sm:w-auto"
+                className="group px-4 md:px-8 py-3 md:py-6 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 hover:from-[#1E3A5F]/70 hover:to-[#1E3A5F]/50 text-white rounded-lg md:rounded-xl text-base md:text-xl font-semibold border border-[#1E3A5F] hover:border-orange-500/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full sm:w-auto"
               >
                 View Trading Programs
-                <ArrowRight className="ml-2 w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="ml-1 md:ml-2 w-4 h-4 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </motion.div>
           </div>
@@ -362,7 +389,7 @@ export default function Hero() {
 
       {/* Add Glowing Orbs */}
       <motion.div
-        className="absolute top-1/4 right-1/4 w-32 md:w-64 h-32 md:h-64 bg-orange-500/5 rounded-full blur-3xl"
+        className="absolute top-1/4 right-1/4 w-16 md:w-64 h-16 md:h-64 bg-orange-500/5 rounded-full blur-2xl md:blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.3, 0.5, 0.3]
@@ -374,7 +401,7 @@ export default function Hero() {
         }}
       />
       <motion.div
-        className="absolute bottom-1/4 left-1/4 w-48 md:w-96 h-48 md:h-96 bg-blue-500/5 rounded-full blur-3xl"
+        className="absolute bottom-1/4 left-1/4 w-24 md:w-96 h-24 md:h-96 bg-blue-500/5 rounded-full blur-2xl md:blur-3xl"
         animate={{
           scale: [1.2, 1, 1.2],
           opacity: [0.3, 0.5, 0.3]
@@ -386,9 +413,6 @@ export default function Hero() {
         }}
       />
 
-     
-
-     
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
     </section>
   )

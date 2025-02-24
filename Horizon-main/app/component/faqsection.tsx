@@ -13,7 +13,7 @@ const faqData = [
     { question: "Are there any time restrictions for trading?", answer: "You can trade 24/5 during market hours. We don't impose minimum trading days, but consistency is key for successful evaluation." },
     { question: "What happens if I break a trading rule?", answer: "Breaking trading rules like exceeding drawdown limits results in immediate account termination. We strictly enforce rules to maintain risk management standards." },
     { question: "Can I trade news events?", answer: "Yes, you can trade during news events. However, we recommend proper risk management due to increased volatility during these times." },
-    { question: "Do you offer any training or support?", answer: "We provide comprehensive educational resources, market analysis, and 24/7 technical support. Our community also includes experienced traders who share insights." },
+    { question: "Do you offer any training or support?", answer: "We provide comprehensive educational resources, market analysis, and 24/7 technical support. Our community also includes experienced traders who share insights." }
 ];
 
 const FaqSection: React.FC = () => {
@@ -35,39 +35,31 @@ const FaqSection: React.FC = () => {
     );
 
     return (
-        <section className="relative min-h-screen py-20 bg-[#0A1428] overflow-hidden">
-            {/* Enhanced animated background effects */}
+        <section className="relative py-12 sm:py-20 bg-[#0A0F1C] overflow-hidden">
+            {/* Simplified background effects */}
             <div className="absolute inset-0">
-                <div className="absolute w-[800px] h-[800px] -left-96 -top-96 bg-blue-500/10 rounded-full blur-[150px] animate-pulse" />
-                <div className="absolute w-[800px] h-[800px] -right-96 -bottom-96 bg-orange-500/10 rounded-full blur-[150px] animate-pulse delay-1000" />
+                <div className="absolute w-[800px] h-[800px] -left-96 -top-96 bg-blue-500/10 rounded-full blur-[100px]" />
+                <div className="absolute w-[800px] h-[800px] -right-96 -bottom-96 bg-orange-500/10 rounded-full blur-[100px]" />
                 <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-16"
-                >
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                        <Sparkles className="w-8 h-8 text-orange-500 animate-pulse" />
-                        <h2 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-orange-400 via-white to-blue-400 bg-clip-text text-transparent">
+                {/* Header - Mobile optimized */}
+                <motion.div className="text-center mb-8 sm:mb-16">
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
+                        <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500 animate-pulse" />
+                        <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold bg-gradient-to-r from-orange-400 via-white to-blue-400 bg-clip-text text-transparent">
                             FAQ
                         </h2>
-                        <Sparkles className="w-8 h-8 text-blue-500 animate-pulse" />
+                        <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 animate-pulse" />
                     </div>
-                    <p className="text-2xl text-blue-200/80 font-light">
+                    <p className="text-xl sm:text-2xl text-blue-200/80 font-light">
                         Everything you need to know about our services
                     </p>
                 </motion.div>
 
-                {/* Search Bar */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="max-w-2xl mx-auto mb-12"
-                >
+                {/* Search bar - Mobile optimized */}
+                <motion.div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400/50" />
                         <input
@@ -81,17 +73,19 @@ const FaqSection: React.FC = () => {
                     </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* FAQ Grid - Mobile optimized */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
                     {filteredFaqs.slice(0, visibleQuestions).map((faq, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
+                            transition={{ duration: 0.3 }}
                             className="group relative"
                         >
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-30 transition-all duration-500 blur" />
+                            {/* Simplified card animations */}
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-30 transition-all duration-300 blur" />
                             <div className="relative bg-gradient-to-br from-blue-900/40 to-transparent backdrop-blur-xl border border-blue-500/20 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-500">
                                 <button
                                     className="w-full p-6 flex items-center justify-between text-left group"
@@ -129,10 +123,11 @@ const FaqSection: React.FC = () => {
                     ))}
                 </div>
 
+                {/* Simplified "Load More" button animation */}
                 {visibleQuestions < filteredFaqs.length && (
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         className="text-center mt-16"
                     >

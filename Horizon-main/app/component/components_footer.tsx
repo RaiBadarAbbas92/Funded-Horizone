@@ -15,18 +15,13 @@ export function Footer() {
         <div className="absolute w-[800px] h-[800px] -right-96 bottom-0 bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Top Section with enhanced styling */}
-        <div className="py-20 border-b border-gray-800/50 backdrop-blur-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-            {/* Brand Section with animated elements */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="space-y-8"
-            >
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-400 via-blue-400 to-orange-400 bg-clip-text text-transparent">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Top Section - Mobile optimized */}
+        <div className="py-12 sm:py-20 border-b border-gray-800/50 backdrop-blur-sm">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-16">
+            {/* Brand Section */}
+            <motion.div className="space-y-6 sm:space-y-8 text-center lg:text-left">
+              <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-400 via-blue-400 to-orange-400 bg-clip-text text-transparent">
                 Funded Horizon
               </h2>
               <p className="text-gray-300 leading-relaxed text-lg">
@@ -48,8 +43,8 @@ export function Footer() {
               </div>
             </motion.div>
 
-            {/* Quick Links with hover effects */}
-            <div className="grid grid-cols-2 gap-12">
+            {/* Quick Links - Mobile optimized */}
+            <div className="grid grid-cols-2 gap-8 sm:gap-12">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -78,13 +73,8 @@ export function Footer() {
               </motion.div>
             </div>
 
-            {/* Newsletter with enhanced styling */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="space-y-8"
-            >
+            {/* Newsletter - Mobile optimized */}
+            <motion.div className="space-y-6 sm:space-y-8">
               <h3 className="text-xl font-semibold text-white">Stay Updated</h3>
               <p className="text-gray-300">Subscribe to our newsletter for the latest updates and market insights.</p>
               <div className="flex flex-col space-y-4">
@@ -101,9 +91,9 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section with enhanced styling */}
-        <div className="py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        {/* Bottom Section - Mobile optimized */}
+        <div className="py-6 sm:py-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <p className="text-gray-400 text-sm">
               © {new Date().getFullYear()} Funded Horizon. All rights reserved.
             </p>

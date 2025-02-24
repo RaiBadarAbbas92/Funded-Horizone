@@ -155,7 +155,7 @@ export default function TradingChallenge() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveFeature(prev => (prev + 1) % 3)
-    }, 3000)
+    }, 5000)
     return () => clearInterval(interval)
   }, [])
 
@@ -163,63 +163,45 @@ export default function TradingChallenge() {
     <section className="py-16 relative overflow-hidden bg-[#0A1428]">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-[#1E3A5F]/10 to-orange-500/5 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-[#1E3A5F]/10 blur-2xl" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <motion.h2 
-            className="text-4xl md:text-5xl font-bold text-white mb-6"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Professional Trading Programs
             <Sparkles className="inline-block ml-2 w-8 h-8 text-orange-500" />
-          </motion.h2>
+          </h2>
           
           <div className="flex flex-wrap justify-center gap-3 mb-12 max-w-4xl mx-auto">
             {ACCOUNT_SIZES.map((balance) => (
-              <motion.button
+              <button
                 key={balance}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedBalance(balance)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                   selectedBalance === balance 
-                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+                  ? "bg-orange-500 text-white"
                   : "bg-[#1E3A5F] text-gray-300 hover:bg-[#1E3A5F]/80"
                 }`}
               >
                 {balance}
-              </motion.button>
+              </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {Object.entries(CHALLENGE_TYPES).map(([type, data]) => (
-            <motion.div
+            <div
               key={type}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -5 }}
-              onHoverStart={() => setHoveredCard(type)}
-              onHoverEnd={() => setHoveredCard(null)}
               className="bg-[#1E3A5F]/30 backdrop-blur-xl rounded-xl p-6 border border-[#1E3A5F] relative"
             >
               {hoveredCard === type && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                <div
                   className="absolute -top-2 right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full"
                 >
                   {data.popularityScore}% Popular
-                </motion.div>
+                </div>
               )}
 
               <div className="absolute -top-3 -right-3 bg-red-500 text-white text-xs px-3 py-1 rounded-full transform rotate-12">
@@ -234,20 +216,20 @@ export default function TradingChallenge() {
               <p className="text-gray-400 text-sm mb-4">{data.description}</p>
 
               <div className="text-center mb-6">
-                <motion.div className="flex items-center justify-center gap-2">
-                  <motion.span 
+                <div className="flex items-center justify-center gap-2">
+                  <span 
                     className="text-2xl font-bold text-gray-500 line-through"
                     key={data.prices[selectedBalance]}
                   >
                     {data.prices[selectedBalance]}
-                  </motion.span>
-                  <motion.span 
+                  </span>
+                  <span 
                     className="text-2xl font-bold text-orange-500"
                     key={data.salePrice?.[selectedBalance]}
                   >
                     {data.salePrice?.[selectedBalance]}
-                  </motion.span>
-                </motion.div>
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-3 mb-6">
@@ -260,26 +242,21 @@ export default function TradingChallenge() {
               </div>
 
               <AnimatePresence mode="wait">
-                <motion.div
+                <div
                   key={activeFeature}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
                   className="text-sm text-gray-300 mb-4 h-12 flex items-center justify-center"
                 >
                   {data.features[activeFeature]}
-                </motion.div>
+                </div>
               </AnimatePresence>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 className={`w-full bg-gradient-to-r ${data.color} text-white py-3 rounded-lg font-bold text-sm shadow-lg flex items-center justify-center gap-2 group hover:shadow-orange-500/20`}
               >
                 Get Started
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
           ))}
         </div>
       </div>
