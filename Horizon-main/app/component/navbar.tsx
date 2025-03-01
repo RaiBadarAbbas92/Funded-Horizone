@@ -35,6 +35,11 @@ export function Navbar() {
     }
   }, []);
 
+  const handleNavigation = (path: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push(path);
+  };
+
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Trading', href: '/pages/trading' },
@@ -49,7 +54,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link href="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
+          <Link href="/" onClick={(e) => handleNavigation('/', e)} className="flex items-center">
             <Image src="/logo.svg" alt="Logo" width={40} height={30} className="w-20 h-20 object-contain" priority />
           </Link>
           {/* Desktop Navigation */}
@@ -57,7 +62,8 @@ export function Navbar() {
             {navItems.map(({ label, href }) => (
               <Link 
                 key={label} 
-                href={href} 
+                href={href}
+                onClick={(e) => handleNavigation(href, e)}
                 className="text-base text-white/90 hover:text-white transition-colors duration-200 font-medium"
               >
                 {label}
@@ -69,6 +75,7 @@ export function Navbar() {
             {isLoggedIn ? (
               <Link 
                 href="/dashboard"
+                onClick={(e) => handleNavigation('/dashboard', e)}
                 className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl"
               >
                 Dashboard <ChevronRight className="ml-2 w-4 h-4" />
@@ -77,12 +84,14 @@ export function Navbar() {
               <>
                 <Link 
                   href="/signup"
+                  onClick={(e) => handleNavigation('/signup', e)}
                   className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl"
                 >
                   Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                 </Link>
                 <Link 
                   href="/signin"
+                  onClick={(e) => handleNavigation('/signin', e)}
                   className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10"
                 >
                   Login
@@ -102,7 +111,8 @@ export function Navbar() {
                   {navItems.map(({ label, href }) => (
                     <Link 
                       key={label} 
-                      href={href} 
+                      href={href}
+                      onClick={(e) => handleNavigation(href, e)}
                       className="text-lg text-white/90 hover:text-white transition-all duration-300 py-3 px-6 rounded-xl hover:bg-gradient-to-r hover:from-orange-500/10 hover:to-blue-600/10 group"
                     >
                       <span className="relative">
@@ -114,6 +124,7 @@ export function Navbar() {
                     {isLoggedIn ? (
                       <Link 
                         href="/dashboard"
+                        onClick={(e) => handleNavigation('/dashboard', e)}
                         className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300"
                       >
                         Dashboard <ChevronRight className="ml-2 w-4 h-4" />
@@ -122,12 +133,14 @@ export function Navbar() {
                       <>
                         <Link 
                           href="/signup"
+                          onClick={(e) => handleNavigation('/signup', e)}
                           className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300"
                         >
                           Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                         </Link>
                         <Link 
                           href="/signin"
+                          onClick={(e) => handleNavigation('/signin', e)}
                           className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300"
                         >
                           Login

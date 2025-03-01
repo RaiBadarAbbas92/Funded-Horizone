@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import TradingChart from '../components/TradingChart'
-import { useRouter } from 'next/navigation'
 
 const tradingStats = [
   {
@@ -89,15 +88,10 @@ const floatingNumbers = Array.from({ length: 5 }, (_, i) => ({
 export default function Hero() {
   const [showTradingModal, setShowTradingModal] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-  const router = useRouter()
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
-
-  const handleNavigation = (path: string) => {
-    router.push(path)
-  }
 
   return (
     <section className="relative min-h-screen pt-0 sm:pt-24 overflow-hidden bg-[#0A1428] flex items-start sm:items-center justify-center">
@@ -161,14 +155,14 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row justify-center gap-2 md:gap-6 mb-8 md:mb-32 px-2 md:px-4">
               <Button 
                 className="group px-4 md:px-8 py-3 md:py-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg md:rounded-xl text-base md:text-xl font-semibold w-full sm:w-auto"
-                onClick={() => handleNavigation('/signup')}
+                onClick={() => window.location.href = '/signup'}
               >
                 Start Trading Now
                 <ChevronRight className="ml-1 md:ml-2 w-4 h-4 md:w-6 md:h-6" />
               </Button>
               <Button 
                 className="group px-4 md:px-8 py-3 md:py-6 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 text-white rounded-lg md:rounded-xl text-base md:text-xl font-semibold border border-[#1E3A5F] w-full sm:w-auto"
-                onClick={() => handleNavigation('/trading-programs')}
+                onClick={() => window.location.href = '/trading-programs'}
               >
                 View Trading Programs
                 <ArrowRight className="ml-1 md:ml-2 w-4 h-4 md:w-6 md:h-6" />
