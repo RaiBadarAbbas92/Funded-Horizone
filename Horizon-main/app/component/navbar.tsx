@@ -14,24 +14,28 @@ export function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 0);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Check if window is defined (client-side)
+    if (typeof window !== 'undefined') {
+      let ticking = false;
+      const handleScroll = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            setIsScrolled(window.scrollY > 0);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
 
-    setIsLoggedIn(!!localStorage.getItem('accessToken'));
+      // Check localStorage only on client side
+      setIsLoggedIn(!!window.localStorage.getItem('accessToken'));
 
-    return () => window.removeEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
   }, []);
 
-  const handleNavigation = (path) => router.push(path);
+  const handleNavigation = (path: string) => router.push(path);
 
   const navItems = [
     { label: 'Home', href: '/' },

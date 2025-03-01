@@ -45,21 +45,32 @@ const PAYMENT_METHODS = [
   }
 ]
 
-const CHALLENGE_TYPES = {
-  'HFT Pro': {
+interface ChallengeType {
+  value: string
+  label: string
+  description: string
+  features: string[]
+  prices: {
+    [key: string]: number
+  }
+}
+
+const CHALLENGE_TYPES: Record<string, ChallengeType> = {
+  'HFT Neo': {
     value: 'type1',
     label: 'HFT Pro',
     description: 'Advanced high-frequency trading program with institutional tools',
     features: ['Advanced algorithms', 'Low latency execution', 'Professional support'],
     prices: {
-      "1000": 15,
-      "2500": 35,
-      "5000": 65,
-      "10000": 125,
-      "25000": 250,
-      "50000": 450,
-      "100000": 800,
-      "200000": 1500
+      "1000": 14,
+      "3000": 28,
+      "5000": 40,
+      "10000": 68,
+      "25000": 133,
+      "50000": 79,
+      "100000": 136,
+      "200000": 498,
+      "500000": 992
     }
   },
   'Phase 2': {
@@ -68,14 +79,15 @@ const CHALLENGE_TYPES = {
     description: 'Intermediate level challenge with balanced risk parameters',
     features: ['Flexible trading style', 'Moderate risk limits', 'Weekly payouts'],
     prices: {
-      "1000": 12,
-      "2500": 30,
-      "5000": 55,
-      "10000": 105,
-      "25000": 200,
-      "50000": 355,
-      "100000": 650,
-      "200000": 1150
+      "1000": 10,
+      "3000": 19,
+      "5000": 29,
+      "10000": 47,
+      "25000": 91,
+      "50000": 64,
+      "100000": 112,
+      "200000": 371,
+      "500000": 693
     }
   },
   'Phase 1': {
@@ -84,14 +96,15 @@ const CHALLENGE_TYPES = {
     description: 'Entry level program perfect for beginning your journey',
     features: ['Basic analysis tools', 'Conservative risk limits', 'Learning resources'],
     prices: {
-      "1000": 8,
-      "2500": 19,
-      "5000": 36,
-      "10000": 67,
-      "25000": 133,
-      "50000": 238,
-      "100000": 450,
-      "200000": 835
+      "1000": 7,
+      "3000": 14,
+      "5000": 19,
+      "10000": 31,
+      "25000": 54,
+      "50000": 47,
+      "100000": 79,
+      "200000": 274,
+      "500000": 499
     }
   }
 }
@@ -139,14 +152,14 @@ export default function BuyPage() {
     if (field === 'challenge_type') {
       const challengeType = Object.values(CHALLENGE_TYPES).find(type => type.value === value)
       if (challengeType && formData.account_size) {
-        setPrice(challengeType.prices[formData.account_size])
+        setPrice(challengeType.prices[formData.account_size as keyof typeof challengeType.prices] || null)
       }
     }
     
     if (field === 'account_size') {
       const challengeType = Object.values(CHALLENGE_TYPES).find(type => type.value === formData.challenge_type)
       if (challengeType) {
-        setPrice(challengeType.prices[value])
+        setPrice(challengeType.prices[value as keyof typeof challengeType.prices] || null)
       }
     }
   }
@@ -350,7 +363,7 @@ export default function BuyPage() {
                               <SelectValue placeholder="Select account size" />
                             </SelectTrigger>
                             <SelectContent>
-                              {["1000", "2500", "5000", "10000", "25000", "50000", "100000", "200000"].map((size) => (
+                              {["1000", "3000", "5000", "10000", "25000", "50000", "100000", "200000", "500000"].map((size) => (
                                 <SelectItem key={size} value={size}>
                                   <div className="flex items-center gap-2">
                                     <DollarSign className="h-4 w-4 text-green-500" />
