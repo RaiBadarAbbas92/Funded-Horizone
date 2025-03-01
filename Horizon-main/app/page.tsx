@@ -1,6 +1,6 @@
 "use client"
 
-import { Navbar } from "./component/navbar"
+import Nav from "./component/Nav"
 import { Footer } from "./component/components_footer"
 import Testimonials from "./component/testimonials"
 import Hero from "./components/hero-section"
@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <SaleOfferModal />
       <main className="bg-[#0A0F1C]">
-        <Navbar />
+        <Nav />
         <Hero />
         <LiveMarketTicker />
         <StatisticsSection />
