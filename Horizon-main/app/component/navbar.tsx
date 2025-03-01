@@ -79,12 +79,12 @@ export function Navbar() {
               </Button>
             ) : (
               <>
-                <Button className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl" onClick={() => handleNavigation('/signup')}>
+                <Button className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl" onClick={() => window.location.href = '/signup'}>
                   Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                 </Button>
-                <Button className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10" onClick={() => handleNavigation('/signin')}>
+                <Button className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10" onClick={() => window.location.href = '/sigin'}>
                   Login
-                </Button> 
+                </Button>
               </>
             )}
             {/* Mobile Menu */}
@@ -112,10 +112,10 @@ export function Navbar() {
                       </Button>
                     ) : (
                       <>
-                        <Button className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300" onClick={() => handleNavigation('/signup')}>
+                        <Button className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300" onClick={() => window.location.href = '/signup'}>
                           Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                         </Button>
-                        <Button className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300" onClick={() => handleNavigation('/signin')}>
+                        <Button className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300" onClick={() => window.location.href = '/sigin'}>
                           Login
                         </Button>
                       </>
