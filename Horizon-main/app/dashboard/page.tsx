@@ -14,6 +14,7 @@ import {
   ResponsiveContainer, Legend, Bar, BarChart, ReferenceLine 
 } from "recharts"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import TradingChallenge from '../component/trading-challenge'
 
 interface TradeDetail {
   ticket: string
@@ -75,6 +76,12 @@ interface SankeyLink {
   color: string
 }
 
+interface Order {
+  order_id: string;
+  balance: string;
+  username: string;
+}
+
 export default function DashboardPage() {
   const [accountDetails, setAccountDetails] = useState<AccountDetail | null>(null)
   const [tradeHistory, setTradeHistory] = useState<FormattedTrade[]>([])
@@ -111,6 +118,39 @@ export default function DashboardPage() {
       { source: 'Commission', target: 'Final Balance', value: 300, color: '#f59e0b' },
     ]
   })
+  const [hasOrders, setHasOrders] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkOrders = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          setError('No access token found');
+          return;
+        }
+
+        const response = await fetch('https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/order_ids', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders');
+        }
+
+        const orders: Order[] = await response.json();
+        setHasOrders(orders.length > 0);
+      } catch (err) {
+        console.error('Error checking orders:', err);
+        // Don't set error here to allow dashboard to load even if order check fails
+      }
+    };
+
+    checkOrders();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -169,8 +209,11 @@ export default function DashboardPage() {
       }
     }
 
-    fetchData()
-  }, [])
+    // Only fetch dashboard data if we have orders
+    if (hasOrders) {
+      fetchData();
+    }
+  }, [hasOrders]);
 
   const formatBalance = (balance?: number) => {
     return balance ? `$${balance.toLocaleString()}` : '$0'
@@ -197,9 +240,9 @@ export default function DashboardPage() {
     return `${((minProfit / balance) * 100).toFixed(2)}%`
   }
 
-  if (isLoading) {
+  if (isLoading && hasOrders !== false) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen flex items-center justify-center">
         <motion.div
           animate={{ 
             scale: [1, 1.2, 1],
@@ -213,7 +256,23 @@ export default function DashboardPage() {
           className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
         />
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-400 text-center">
+          <p className="text-xl font-semibold">Error loading dashboard</p>
+          <p className="mt-2">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If we've confirmed there are no orders, show trading challenge
+  if (hasOrders === false) {
+    return <TradingChallenge />;
   }
 
   return (
