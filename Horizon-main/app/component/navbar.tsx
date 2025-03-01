@@ -35,17 +35,6 @@ export function Navbar() {
     }
   }, []);
 
-  const handleNavigation = (path: string) => {
-    router.push(path);
-    // Add a small delay before scrolling to top
-    setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }, 100);
-  };
-
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Trading', href: '/pages/trading' },
@@ -66,25 +55,38 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navItems.map(({ label, href }) => (
-              <button key={label} onClick={() => handleNavigation(href)} className="text-base text-white/90 hover:text-white transition-colors duration-200 font-medium">
+              <Link 
+                key={label} 
+                href={href} 
+                className="text-base text-white/90 hover:text-white transition-colors duration-200 font-medium"
+              >
                 {label}
-              </button>
+              </Link>
             ))}
           </div>
           {/* Client Area */}
           <div className="flex items-center gap-4">
             {isLoggedIn ? (
-              <Button className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl" onClick={() => handleNavigation('/dashboard')}>
+              <Link 
+                href="/dashboard"
+                className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl"
+              >
                 Dashboard <ChevronRight className="ml-2 w-4 h-4" />
-              </Button>
+              </Link>
             ) : (
               <>
-                <Button className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl" onClick={() => window.location.href = '/signup'}>
+                <Link 
+                  href="/signup"
+                  className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl"
+                >
                   Sign Up <ChevronRight className="ml-2 w-4 h-4" />
-                </Button>
-                <Button className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10" onClick={() => window.location.href = '/sigin'}>
+                </Link>
+                <Link 
+                  href="/signin"
+                  className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10"
+                >
                   Login
-                </Button>
+                </Link>
               </>
             )}
             {/* Mobile Menu */}
@@ -98,26 +100,38 @@ export function Navbar() {
               <SheetContent side="right" className="w-[300px] bg-gradient-to-b from-black to-zinc-900 border-white/10 rounded-l-3xl">
                 <div className="flex flex-col space-y-6 mt-10">
                   {navItems.map(({ label, href }) => (
-                    <button key={label} onClick={() => handleNavigation(href)} className="text-lg text-white/90 hover:text-white transition-all duration-300 py-3 px-6 rounded-xl hover:bg-gradient-to-r hover:from-orange-500/10 hover:to-blue-600/10 group">
+                    <Link 
+                      key={label} 
+                      href={href} 
+                      className="text-lg text-white/90 hover:text-white transition-all duration-300 py-3 px-6 rounded-xl hover:bg-gradient-to-r hover:from-orange-500/10 hover:to-blue-600/10 group"
+                    >
                       <span className="relative">
                         {label}
-                        <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-gradient-to-r from-orange-500 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                       </span>
-                    </button>
+                    </Link>
                   ))}
                   <div className="pt-8 px-6 space-y-4">
                     {isLoggedIn ? (
-                      <Button className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300" onClick={() => handleNavigation('/dashboard')}>
+                      <Link 
+                        href="/dashboard"
+                        className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300"
+                      >
                         Dashboard <ChevronRight className="ml-2 w-4 h-4" />
-                      </Button>
+                      </Link>
                     ) : (
                       <>
-                        <Button className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300" onClick={() => window.location.href = '/signup'}>
+                        <Link 
+                          href="/signup"
+                          className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300"
+                        >
                           Sign Up <ChevronRight className="ml-2 w-4 h-4" />
-                        </Button>
-                        <Button className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300" onClick={() => window.location.href = '/sigin'}>
+                        </Link>
+                        <Link 
+                          href="/signin"
+                          className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300"
+                        >
                           Login
-                        </Button>
+                        </Link>
                       </>
                     )}
                   </div>

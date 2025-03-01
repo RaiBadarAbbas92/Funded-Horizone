@@ -367,7 +367,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
                               Edit
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-[95vw] md:max-w-3xl bg-[#0A1428] border border-[#1E3A5F] shadow-2xl">
+                          <DialogContent className="max-w-[95vw] md:max-w-3xl bg-[#0A1428] border border-[#1E3A5F] shadow-2xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle className="text-xl font-bold text-white flex items-center gap-3">
                                 <div className="p-2 bg-orange-500/10 rounded-lg">
