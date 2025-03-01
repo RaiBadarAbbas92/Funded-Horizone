@@ -222,7 +222,7 @@ export default function Login() {
           >
             <p className="text-gray-400">
               Don't have an account?{" "}
-              <Link href="/Signup" className="text-orange-400 hover:text-orange-500 hover:underline transition duration-300">
+              <Link href="/signup" className="text-orange-400 hover:text-orange-500 hover:underline transition duration-300">
                 Sign Up
               </Link>
             </p>

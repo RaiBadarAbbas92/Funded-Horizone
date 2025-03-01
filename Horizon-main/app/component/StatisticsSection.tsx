@@ -3,7 +3,7 @@
 import React from 'react'
 import CountUp from 'react-countup'
 import { motion } from 'framer-motion'
-import { TrendingUp, Users, DollarSign, Award } from 'lucide-react'
+import { TrendingUp, Users, DollarSign, Award, HeadphonesIcon, UserCheck } from 'lucide-react'
 
 const StatCard = ({ title, value, suffix = '', icon: Icon }) => (
   <motion.div
@@ -64,9 +64,9 @@ const StatisticsSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           <StatCard title="Active Traders" value={1983} icon={Users} />
-          <StatCard title="Total Payouts" value={45000} suffix="$" icon={DollarSign} />
+          <StatCard title="Total Payouts" value={450789} suffix="$" icon={DollarSign} />
           <StatCard title="Success Rate" value={99} suffix="%" icon={TrendingUp} />
-          <StatCard title="Customer support" value={24/7} icon={Award} />
+          <StatCard title="Customer Support" value={24} suffix="/7" icon={HeadphonesIcon} />
         </div>
       </div>
     </section>

@@ -327,6 +327,7 @@ export default function TradingChallenge() {
               </div>
 
               <button
+                onClick={() => window.location.href = '/signup'}
                 className={`w-full bg-gradient-to-r ${data.color} text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2`}
               >
                 Get Started

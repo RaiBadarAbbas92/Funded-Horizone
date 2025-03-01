@@ -67,19 +67,15 @@ export function Footer() {
               </motion.div>
             </div>
 
-            {/* Newsletter - Mobile optimized */}
+            {/* Support Section */}
             <motion.div className="space-y-6 sm:space-y-8">
-              <h3 className="text-xl font-semibold text-white">Stay Updated</h3>
-              <p className="text-gray-300">Subscribe to our newsletter for the latest updates and market insights.</p>
-              <div className="flex flex-col space-y-4">
-                <Input 
-                  type="email" 
-                  placeholder="Enter your email"
-                  className="bg-white/5 border-gray-800 text-white placeholder:text-gray-500 focus:border-orange-500 h-12"
-                />
-                <Button className="bg-gradient-to-r from-orange-500 to-blue-500 hover:from-orange-600 hover:to-blue-600 text-white font-medium py-6 transition-all duration-300 hover:scale-105">
-                  Subscribe Now
-                </Button>
+              <h3 className="text-xl font-semibold text-white">Support</h3>
+              <p className="text-gray-300">Need help? Contact our support team.</p>
+              <div className="flex items-center space-x-3 text-gray-300">
+                <Mail className="w-5 h-5" />
+                <a href="mailto:support@fundedhorizon.com" className="hover:text-orange-400 transition-colors duration-300">
+                  support@fundedhorizon.com
+                </a>
               </div>
             </motion.div>
           </div>
