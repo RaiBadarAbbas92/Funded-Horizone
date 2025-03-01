@@ -34,29 +34,25 @@ export function Navbar() {
 
   const handleNavigation = async (path: string, e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Ensure the path starts with a forward slash
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    
     try {
-      // Ensure the path starts with a forward slash
-      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-      
-      // If we're already on the page, force a refresh
-      if (pathname === normalizedPath) {
-        window.location.href = normalizedPath;
-        return;
-      }
-
-      // Use Next.js router for navigation
+      // First attempt: Use Next.js router
       await router.push(normalizedPath);
       
-      // Force a page refresh if navigation seems stuck
+      // Check if navigation was successful after a short delay
       setTimeout(() => {
-        if (pathname === normalizedPath) {
+        if (window.location.pathname !== normalizedPath) {
+          // If router navigation didn't work, force a hard navigation
           window.location.href = normalizedPath;
         }
-      }, 100);
+      }, 300);
     } catch (error) {
       console.error('Navigation error:', error);
-      // Fallback to traditional navigation if router fails
-      window.location.href = path;
+      // Fallback: Use window.location for hard navigation
+      window.location.href = normalizedPath;
     }
   };
 
@@ -111,7 +107,7 @@ export function Navbar() {
                 </Link>
                 <Link 
                   href="/signin"
-                  onClick={(e) => handleNavigation('/signin', e)}
+                  onClick={(e) => handleNavigation('/sigin', e)}
                   className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10"
                 >
                   Login
@@ -159,7 +155,7 @@ export function Navbar() {
                           Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                         </Link>
                         <Link 
-                          href="/signin"
+                          href="/sigin"
                           onClick={(e) => handleNavigation('/signin', e)}
                           className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300"
                         >
