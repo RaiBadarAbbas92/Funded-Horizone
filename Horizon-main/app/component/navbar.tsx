@@ -35,7 +35,16 @@ export function Navbar() {
     }
   }, []);
 
-  const handleNavigation = (path: string) => router.push(path);
+  const handleNavigation = (path: string) => {
+    router.push(path);
+    // Add a small delay before scrolling to top
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -51,7 +60,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
             <Image src="/logo.svg" alt="Logo" width={40} height={30} className="w-20 h-20 object-contain" priority />
           </Link>
           {/* Desktop Navigation */}
@@ -73,7 +82,7 @@ export function Navbar() {
                 <Button className="hidden sm:inline-flex bg-gradient-to-r from-orange-500 to-blue-600 text-white px-6 py-5 rounded-xl" onClick={() => handleNavigation('/signup')}>
                   Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                 </Button>
-                <Button className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10" onClick={() => handleNavigation('/sigin')}>
+                <Button className="hidden sm:flex bg-white/5 text-white px-6 py-5 rounded-xl border border-white/10" onClick={() => handleNavigation('/signin')}>
                   Login
                 </Button> 
               </>
@@ -106,7 +115,7 @@ export function Navbar() {
                         <Button className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-blue-600 hover:to-orange-500 text-white w-full rounded-xl py-6 text-base font-semibold shadow-lg transition-all duration-300" onClick={() => handleNavigation('/signup')}>
                           Sign Up <ChevronRight className="ml-2 w-4 h-4" />
                         </Button>
-                        <Button className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300" onClick={() => handleNavigation('/sigin')}>
+                        <Button className="bg-white/5 backdrop-blur-lg text-white hover:bg-white/10 w-full rounded-xl py-6 text-base font-semibold border border-white/10 hover:border-orange-500/50 transition-all duration-300" onClick={() => handleNavigation('/signin')}>
                           Login
                         </Button>
                       </>
