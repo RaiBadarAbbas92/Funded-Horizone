@@ -128,7 +128,10 @@ export function SaleOfferModal() {
 
                 <Button 
                   className="w-full bg-gradient-to-r from-orange-500 to-blue-600 hover:from-orange-600 hover:to-blue-700 text-white py-6 rounded-xl font-bold text-xl"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    window.location.href = "/signup";
+                  }}
                 >
                   Claim Your Exclusive Discount
                   <ArrowRight className="w-6 h-6 ml-2" />

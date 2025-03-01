@@ -39,20 +39,25 @@ export function Navbar() {
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     
     try {
-      // First attempt: Use Next.js router
+      // For production/Heroku environment, use window.location.replace for more reliable navigation
+      if (process.env.NODE_ENV === 'production') {
+        window.location.replace(normalizedPath);
+        return;
+      }
+
+      // For development, try Next.js routing first
       await router.push(normalizedPath);
       
-      // Check if navigation was successful after a short delay
+      // Force reload if the page doesn't change within 200ms
+      const currentPath = window.location.pathname;
       setTimeout(() => {
-        if (window.location.pathname !== normalizedPath) {
-          // If router navigation didn't work, force a hard navigation
-          window.location.href = normalizedPath;
+        if (window.location.pathname === currentPath) {
+          window.location.replace(normalizedPath);
         }
-      }, 300);
+      }, 200);
     } catch (error) {
       console.error('Navigation error:', error);
-      // Fallback: Use window.location for hard navigation
-      window.location.href = normalizedPath;
+      window.location.replace(normalizedPath);
     }
   };
 
