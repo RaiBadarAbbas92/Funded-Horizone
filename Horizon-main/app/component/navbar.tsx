@@ -6,15 +6,15 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Menu, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Check if window is defined (client-side)
     if (typeof window !== 'undefined') {
       let ticking = false;
       const handleScroll = () => {
@@ -27,17 +27,37 @@ export function Navbar() {
         }
       };
       window.addEventListener('scroll', handleScroll, { passive: true });
-
-      // Check localStorage only on client side
       setIsLoggedIn(!!window.localStorage.getItem('accessToken'));
-
       return () => window.removeEventListener('scroll', handleScroll);
     }
   }, []);
 
-  const handleNavigation = (path: string, e: React.MouseEvent) => {
+  const handleNavigation = async (path: string, e: React.MouseEvent) => {
     e.preventDefault();
-    router.push(path);
+    try {
+      // Ensure the path starts with a forward slash
+      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+      
+      // If we're already on the page, force a refresh
+      if (pathname === normalizedPath) {
+        window.location.href = normalizedPath;
+        return;
+      }
+
+      // Use Next.js router for navigation
+      await router.push(normalizedPath);
+      
+      // Force a page refresh if navigation seems stuck
+      setTimeout(() => {
+        if (pathname === normalizedPath) {
+          window.location.href = normalizedPath;
+        }
+      }, 100);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback to traditional navigation if router fails
+      window.location.href = path;
+    }
   };
 
   const navItems = [
