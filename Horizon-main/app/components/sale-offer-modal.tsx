@@ -54,15 +54,15 @@ export function SaleOfferModal() {
               <div className="flex justify-between">
                 <p className="text-orange-400 font-bold">$100K Package</p>
                 <div className="text-right">
-                  <p className="text-gray-400 line-through">$1000</p>
-                  <p className="text-orange-400 font-bold">$250 (75% OFF)</p>
+                  <p className="text-gray-400 line-through">$545</p>
+                  <p className="text-orange-400 font-bold">$136 (75% OFF)</p>
                 </div>
               </div>
               <div className="flex justify-between">
                 <p className="text-blue-300 font-bold">$50K Package</p>
                 <div className="text-right">
-                  <p className="text-gray-400 line-through">$500</p>
-                  <p className="text-blue-300 font-bold">$350 (30% OFF)</p>
+                  <p className="text-gray-400 line-through">$318</p>
+                  <p className="text-blue-300 font-bold">$79 (30% OFF)</p>
                 </div>
               </div>
             </div>

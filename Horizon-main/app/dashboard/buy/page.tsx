@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -117,6 +117,12 @@ export default function BuyPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
+  const [timeLeft, setTimeLeft] = useState({
+    days: 5,
+    hours: 3,
+    minutes: 0,
+    seconds: 0
+  })
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -128,6 +134,25 @@ export default function BuyPage() {
   })
   const [selectedMethod, setSelectedMethod] = useState<typeof PAYMENT_METHODS[0] | null>(null)
   const [price, setPrice] = useState<number | null>(null)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 }
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
+        } else if (prev.hours > 0) {
+          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
+        } else if (prev.days > 0) {
+          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
+        }
+        return prev
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
 
   const handleCoinSelect = (value: string) => {
     const method = PAYMENT_METHODS.find(m => m.value === value)
@@ -221,16 +246,6 @@ export default function BuyPage() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900 via-gray-900 to-black">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-blue-600 via-orange-600 to-blue-600 text-white py-4 px-6 flex items-center justify-center gap-4 sticky top-0 z-50"
-      >
-        <Sparkles className="h-6 w-6 animate-pulse text-yellow-300" />
-        <span className="font-semibold text-lg">Limited Time Offer: 20% OFF with code</span>
-        <code className="px-4 py-1.5 bg-white/20 rounded-full font-mono font-bold text-lg">PREMIUM20</code>
-      </motion.div>
-
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-5xl mx-auto">
           <motion.div 
@@ -239,11 +254,14 @@ export default function BuyPage() {
             className="text-center mb-16"
           >
             <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-orange-400 to-blue-400 bg-clip-text text-transparent mb-6">
-              Elite Trading Challenge
+              Funded Horizon
             </h1>
             <p className="text-gray-300 text-2xl max-w-2xl mx-auto">
-              Join the exclusive community of funded traders and access institutional-grade capital
+              Join the exclusive community of funded horzon and access institutional-grade capital
             </p>
+            <div className="mt-6 text-xl text-blue-400 font-semibold">
+              Sale ends in: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+            </div>
           </motion.div>
 
           <div className="flex justify-center mb-12">

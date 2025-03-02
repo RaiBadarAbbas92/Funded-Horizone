@@ -277,7 +277,10 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
     (order) =>
       order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.status.toLowerCase().includes(searchTerm.toLowerCase()),
+      order.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.paymentMethod || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.txid || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.user.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const filteredUsers = users.filter(
@@ -291,6 +294,14 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       case "users":
         return (
           <div className="overflow-x-auto">
+            <div className="mb-4">
+              <Input
+                placeholder="Search by name, email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-sm bg-[#1E3A5F]/20 border-[#1E3A5F] text-white"
+              />
+            </div>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -322,6 +333,14 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       case "failedOrders":
         return (
           <div className="overflow-x-auto">
+            <div className="mb-4">
+              <Input
+                placeholder="Search by name, email, payment method, transaction ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-sm bg-[#1E3A5F]/20 border-[#1E3A5F] text-white"
+              />
+            </div>
             <Table>
               <TableHeader>
                 <TableRow>

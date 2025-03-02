@@ -32,7 +32,7 @@ const sidebarItems = [
   { 
     icon: Users, 
     label: "Referral", 
-    href: "/dashboard/referral",
+    href: "/dashboard/referal",
     description: "Manage your referrals"
   },
   { 

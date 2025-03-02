@@ -8,10 +8,10 @@ interface OverviewCardProps {
   value: string
   change: string
   icon: React.ReactNode
-  trend: 'up' | 'down'
+  className?: string
 }
 
-export function OverviewCard({ title, value, change, icon, trend }: OverviewCardProps) {
+export function OverviewCard({ title, value, change, icon, className }: OverviewCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -23,7 +23,7 @@ export function OverviewCard({ title, value, change, icon, trend }: OverviewCard
       }}
       className="relative"
     >
-      <Card className="overflow-hidden bg-gradient-to-br from-slate-900/90 to-slate-800/90 border-slate-700/50 backdrop-blur-sm">
+      <Card className={cn("overflow-hidden bg-gradient-to-br from-slate-900/90 to-slate-800/90 border-slate-700/50 backdrop-blur-sm", className)}>
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
         

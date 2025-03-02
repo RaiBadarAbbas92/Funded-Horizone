@@ -1,6 +1,5 @@
 "use client"
 
-import Nav from "./component/Nav"
 import { Footer } from "./component/components_footer"
 import Testimonials from "./component/testimonials"
 import Hero from "./components/hero-section"
@@ -18,13 +17,14 @@ import { PayoutSection } from "./components/PayoutSection"
 import TradingChallenge from "./component/trading-challenge"
 import FaqSection from "./component/faqsection"
 import { SaleOfferModal } from './components/sale-offer-modal'
+import { Navbar } from "./component/navbar"
 
 export default function Home() {
   return (
     <>
       <SaleOfferModal />
       <main className="bg-[#0A0F1C]">
-        <Nav />
+        <Navbar />
         <Hero />
         <LiveMarketTicker />
         <StatisticsSection />
