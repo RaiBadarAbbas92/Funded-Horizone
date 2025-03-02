@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { TrendingUp, Shield, Clock, ArrowRight, Zap, Sparkles, Crown } from 'lucide-react'
+import { TrendingUp, Shield, Clock, ArrowRight, Zap, Sparkles, Crown, Star } from 'lucide-react'
 
 const ACCOUNT_SIZES = [
   "$1,000", "$3,000", "$5,000", "$10,000", "$25,000", 
@@ -31,6 +31,7 @@ interface ChallengeType {
   badge?: string
   savings: Record<AccountSize, string>
   isPopular?: Record<AccountSize, boolean>
+  discountPercentage: Record<AccountSize, string>
 }
 
 const CHALLENGE_TYPES: Record<string, ChallengeType> = {
@@ -60,12 +61,12 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "$1,000": true,
       "$3,000": false,
       "$5,000": false,
-      "$10,000": false,
+      "$10,000": true,
       "$25,000": false,
       "$50,000": true,
       "$100,000": true,
       "$200,000": false,
-      "$500,000": false
+      "$500,000": true
     },
     salePrice: {
       "$1,000": "$14",
@@ -77,6 +78,17 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "$100,000": "$136",
       "$200,000": "$498",
       "$500,000": "$992"
+    },
+    discountPercentage: {
+      "$1,000": "30% OFF",
+      "$3,000": "30% OFF",
+      "$5,000": "30% OFF",
+      "$10,000": "30% OFF",
+      "$25,000": "30% OFF",
+      "$50,000": "75% OFF",
+      "$100,000": "75% OFF",
+      "$200,000": "50% OFF",
+      "$500,000": "50% OFF"
     },
     features: [
       "Ultra-fast execution speeds",
@@ -123,13 +135,13 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
     },
     isPopular: {
       "$1,000": true,
-      "$3,000": false,
+      "$3,000": true,
       "$5,000": false,
-      "$10,000": false,
-      "$25,000": false,
+      "$10,000": true,
+      "$25,000": true,
       "$50,000": false,
       "$100,000": false,
-      "$200,000": false,
+      "$200,000": true,
       "$500,000": false
     },
     salePrice: {
@@ -142,6 +154,17 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "$100,000": "$112",
       "$200,000": "$371",
       "$500,000": "$693"
+    },
+    discountPercentage: {
+      "$1,000": "30% OFF",
+      "$3,000": "30% OFF",
+      "$5,000": "30% OFF",
+      "$10,000": "30% OFF",
+      "$25,000": "30% OFF",
+      "$50,000": "75% OFF",
+      "$100,000": "75% OFF",
+      "$200,000": "50% OFF",
+      "$500,000": "50% OFF"
     },
     features: [
       "Intermediate trading conditions",
@@ -188,10 +211,10 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
     },
     isPopular: {
       "$1,000": true,
-      "$3,000": false,
-      "$5,000": false,
+      "$3,000": true,
+      "$5,000": true,
       "$10,000": false,
-      "$25,000": false,
+      "$25,000": true,
       "$50,000": false,
       "$100,000": false,
       "$200,000": false,
@@ -207,6 +230,17 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "$100,000": "$79",
       "$200,000": "$274",
       "$500,000": "$499"
+    },
+    discountPercentage: {
+      "$1,000": "30% OFF",
+      "$3,000": "30% OFF",
+      "$5,000": "30% OFF",
+      "$10,000": "30% OFF",
+      "$25,000": "30% OFF",
+      "$50,000": "75% OFF",
+      "$100,000": "75% OFF",
+      "$200,000": "50% OFF",
+      "$500,000": "50% OFF"
     },
     features: [
       "Beginner-friendly rules",
@@ -233,6 +267,15 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
 
 export default function TradingChallenge() {
   const [selectedBalance, setSelectedBalance] = useState<AccountSize>("$10,000")
+  const [selectedAccounts, setSelectedAccounts] = useState<AccountSize[]>([])
+
+  const toggleAccount = (size: AccountSize) => {
+    if (selectedAccounts.includes(size)) {
+      setSelectedAccounts(selectedAccounts.filter(s => s !== size))
+    } else {
+      setSelectedAccounts([...selectedAccounts, size])
+    }
+  }
 
   return (
     <section className="relative min-h-screen py-20 bg-[#0A0F1C]">
@@ -268,8 +311,15 @@ export default function TradingChallenge() {
           {Object.entries(CHALLENGE_TYPES).map(([name, data]) => (
             <div
               key={name}
-              className="bg-gradient-to-br from-gray-900/90 to-black/90 border border-white/10 rounded-2xl p-6"
+              className="relative bg-gradient-to-br from-gray-900/90 to-black/90 border border-white/10 rounded-2xl p-6"
             >
+              {data.isPopular[selectedBalance] && (
+                <div className="absolute -top-3 left-4 px-3 py-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-sm font-bold rounded-full flex items-center gap-1">
+                  <Star className="w-4 h-4" />
+                  Most Popular
+                </div>
+              )}
+              
               {data.badge && (
                 <div className="absolute -top-3 right-4 px-3 py-1 bg-gradient-to-r from-orange-500 to-blue-600 text-white text-sm font-bold rounded-full">
                   {data.badge}
@@ -290,9 +340,14 @@ export default function TradingChallenge() {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400">Price</span>
                   <div className="flex flex-col items-end">
-                    <span className="text-xl text-gray-500 line-through">
-                      {data.prices[selectedBalance]}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl text-gray-500 line-through">
+                        {data.prices[selectedBalance]}
+                      </span>
+                      <span className="text-sm font-semibold text-orange-500">
+                        {data.discountPercentage[selectedBalance]}
+                      </span>
+                    </div>
                     {data.salePrice && (
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold text-green-500">
@@ -327,10 +382,10 @@ export default function TradingChallenge() {
               </div>
 
               <button
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => toggleAccount(selectedBalance)}
                 className={`w-full bg-gradient-to-r ${data.color} text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2`}
               >
-                Get Started
+                {selectedAccounts.includes(selectedBalance) ? 'Selected' : 'Select Account'}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
