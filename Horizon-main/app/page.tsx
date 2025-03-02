@@ -1,5 +1,6 @@
 "use client"
 
+import { useRef } from "react"
 import { Footer } from "./component/components_footer"
 import Testimonials from "./component/testimonials"
 import Hero from "./components/hero-section"
@@ -20,19 +21,33 @@ import { SaleOfferModal } from './components/sale-offer-modal'
 import { Navbar } from "./component/navbar"
 
 export default function Home() {
+  const faqRef = useRef<HTMLDivElement>(null)
+  const tradingRef = useRef<HTMLDivElement>(null)
+  const liveMarketRef = useRef<HTMLDivElement>(null)
+
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <>
       <SaleOfferModal />
       <main className="bg-[#0A0F1C]">
         <Navbar />
         <Hero />
-        <LiveMarketTicker />
+        <div id="live-market">
+          <LiveMarketTicker />
+        </div>
         <StatisticsSection />
         <MarketOverview />
-        <TradingChallenge />
+        <div id="pricing">
+          <TradingChallenge />
+        </div>
         <RiskManagement />
         <CommunityCallToAction />
-        <FaqSection/>
+        <div id="faqs">
+          <FaqSection/>
+        </div>
         <Footer />
       </main>
     </>
