@@ -156,29 +156,28 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         const formData = new FormData()
-        formData.append('account_number', localStorage.getItem('platform_login') || '')
-        formData.append('password', localStorage.getItem('platform_password') || '')
-        formData.append('server', localStorage.getItem('server') || '')
+        formData.append('session', localStorage.getItem('session_id') || '')
+        formData.append('account_id', localStorage.getItem('terminal_id') || '')
 
-        const response = await fetch('https://fundedhorizon-back-65a0759eedf9.herokuapp.com/meta/fetch_account_details', {
+        const response = await fetch('https://fundedhorizon-back-65a0759eedf9.herokuapp.com/myfxbook/fetch_account_details', {
           method: 'POST',
           body: formData
         })
 
         const data = await response.json()
-        setAccountDetails(data.account_details)
+        setAccountDetails(data.account_info)
         
         // Transform trade history data
-        const formattedTrades = (data.trade_details as TradeDetail[])
+        const formattedTrades = (data.history as TradeDetail[])
           .filter(trade => trade.profit !== 0)
           .map(trade => ({
-            id: trade.ticket,
+            id: trade.openTime, // Assuming openTime is unique for each trade
             symbol: trade.symbol,
-            type: trade.trade_type,
-            openPrice: trade.price,
+            type: trade.action,
+            openPrice: trade.openPrice,
             profit: trade.profit,
-            date: trade.date,
-            volume: trade.volume
+            date: trade.openTime,
+            volume: trade.sizing.value
           }))
         setTradeHistory(formattedTrades)
 

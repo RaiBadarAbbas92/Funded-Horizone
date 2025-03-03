@@ -40,6 +40,8 @@ interface OrderDetails {
   orderId?: string
   paymentMethod?: string
   txid?: string
+  sessionId?: string
+  terminalId?: string
 }
 
 interface User {
@@ -212,6 +214,8 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       formData.append('server', editedOrder.server || '')
       formData.append('platform_login', editedOrder.platformLogin || '')
       formData.append('platform_password', editedOrder.platformPassword || '')
+      formData.append('session_id', editedOrder.sessionId || '')
+      formData.append('terminal_id', editedOrder.terminalId || '')
 
       // Extract numeric part from order ID (e.g., "FDH4" -> "4")
       const orderId = editedOrder.id.toString().replace(/[^\d]/g, '')
@@ -464,6 +468,22 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
                                           value={editedOrder?.platformPassword || ''} 
                                           onChange={(e) => setEditedOrder(prev => prev ? {...prev, platformPassword: e.target.value} : null)}
                                           type="password" 
+                                          className="mt-1 bg-[#1E3A5F]/30 border-[#1E3A5F] text-white" 
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label className="text-gray-400">Session ID</Label>
+                                        <Input 
+                                          value={editedOrder?.sessionId || ''} 
+                                          onChange={(e) => setEditedOrder(prev => prev ? {...prev, sessionId: e.target.value} : null)}
+                                          className="mt-1 bg-[#1E3A5F]/30 border-[#1E3A5F] text-white" 
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label className="text-gray-400">Terminal ID</Label>
+                                        <Input 
+                                          value={editedOrder?.terminalId || ''} 
+                                          onChange={(e) => setEditedOrder(prev => prev ? {...prev, terminalId: e.target.value} : null)}
                                           className="mt-1 bg-[#1E3A5F]/30 border-[#1E3A5F] text-white" 
                                         />
                                       </div>

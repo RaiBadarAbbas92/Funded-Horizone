@@ -81,6 +81,8 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
       localStorage.setItem('platform_login', data.platform_login)
       localStorage.setItem('server', data.server)
       localStorage.setItem('password', data.platform_password)
+      localStorage.setItem('session_id', data.session_id) // Add session_id to localStorage
+      localStorage.setItem('terminal_id', data.terminal_id) // Add terminal_id to localStorage
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -92,7 +94,7 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
   // Effect to fetch details when currentOrderId changes
   useEffect(() => {
     if (currentOrderId) {
-    fetchAccountDetails()
+      fetchAccountDetails()
     }
   }, [currentOrderId])
 
