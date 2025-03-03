@@ -148,6 +148,19 @@ export default function DashboardPage() {
     }
   }, [hasOrders]);
 
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'session_id' || event.key === 'terminal_id') {
+        fetchData(); // Call fetchData when session_id or terminal_id changes
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   const formatBalance = (balance?: number) => {
     return balance ? `$${balance.toLocaleString()}` : '$0'
   }
