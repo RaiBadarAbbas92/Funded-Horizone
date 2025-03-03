@@ -57,8 +57,8 @@ interface ChallengeType {
 
 const CHALLENGE_TYPES: Record<string, ChallengeType> = {
   'HFT Neo': {
-    value: 'type1',
-    label: 'HFT Pro',
+    value: 'HFT Neo',
+    label: 'HFT Neo',
     description: 'Advanced high-frequency trading program with institutional tools',
     features: ['Advanced algorithms', 'Low latency execution', 'Professional support'],
     prices: {
@@ -74,7 +74,7 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
     }
   },
   'Phase 2': {
-    value: 'type2',
+    value: 'Phase 2',
     label: 'Phase 2',
     description: 'Intermediate level challenge with balanced risk parameters',
     features: ['Flexible trading style', 'Moderate risk limits', 'Weekly payouts'],
@@ -91,7 +91,7 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
     }
   },
   'Phase 1': {
-    value: 'type3',
+    value: 'Phase 1',
     label: 'Phase 1',
     description: 'Entry level program perfect for beginning your journey',
     features: ['Basic analysis tools', 'Conservative risk limits', 'Learning resources'],

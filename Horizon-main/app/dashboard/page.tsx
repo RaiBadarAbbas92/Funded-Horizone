@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Activity, DollarSign, Target, TrendingUp, Percent, Timer, AlertTriangle } from "lucide-react"
+import { Activity, DollarSign, Percent, AlertTriangle } from "lucide-react"
 import { ResponsiveSankey } from '@nivo/sankey'
 
 import { Header } from "@/components/header"
@@ -10,25 +10,29 @@ import { OverviewCard } from "@/components/overview-card"
 import { AccountDetailsCard } from "@/components/account-details-card"
 import { Card } from "@/components/ui/card"
 import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, 
-  ResponsiveContainer, Legend, Bar, BarChart, ReferenceLine 
-} from "recharts"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
+} from "@/components/ui/table"
 import TradingChallenge from '../component/trading-challenge'
 
 interface TradeDetail {
-  ticket: string
+  openTime: string
+  closeTime: string
   symbol: string
-  trade_type: string
-  price: number
+  action: string
+  sizing: {
+    type: string
+    value: string
+  }
+  openPrice: number
+  closePrice: number
   profit: number
-  date: string
-  volume: number
 }
 
 interface AccountDetail {
   balance: number
   equity: number
+  totalTrades: number
+  drawdown: number
 }
 
 interface FormattedTrade {
@@ -50,36 +54,6 @@ interface PerformanceData {
 interface DrawdownData {
   maxDrawdown: number
   currentDrawdown: number
-  recoveryProgress: number
-  startDate: string
-  lowestPoint: string
-}
-
-interface CandleData {
-  date: string
-  open: number
-  high: number
-  low: number
-  close: number
-  volume: number
-}
-
-interface SankeyNode {
-  id: string
-  nodeColor: string
-}
-
-interface SankeyLink {
-  source: string
-  target: string
-  value: number
-  color: string
-}
-
-interface Order {
-  order_id: string;
-  balance: string;
-  username: string;
 }
 
 export default function DashboardPage() {
@@ -88,35 +62,8 @@ export default function DashboardPage() {
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [drawdownData, setDrawdownData] = useState<DrawdownData>({
-    maxDrawdown: 5.2,
-    currentDrawdown: 2.8,
-    recoveryProgress: 65,
-    startDate: '2024-01-15',
-    lowestPoint: '2024-01-20'
-  })
-  const [candleData, setCandleData] = useState<CandleData[]>([
-    { date: '2024-01-01', open: 10200, high: 10400, low: 10000, close: 10300, volume: 1000 },
-    { date: '2024-01-02', open: 10300, high: 10500, low: 10200, close: 10400, volume: 1200 },
-    // ... add more data points
-  ])
-  const [sankeyData, setSankeyData] = useState({
-    nodes: [
-      { id: 'Initial Balance', nodeColor: '#3b82f6' },
-      { id: 'Trading', nodeColor: '#22c55e' },
-      { id: 'Profit', nodeColor: '#22c55e' },
-      { id: 'Loss', nodeColor: '#ef4444' },
-      { id: 'Commission', nodeColor: '#f59e0b' },
-      { id: 'Final Balance', nodeColor: '#3b82f6' },
-    ],
-    links: [
-      { source: 'Initial Balance', target: 'Trading', value: 10000, color: '#3b82f6' },
-      { source: 'Trading', target: 'Profit', value: 3500, color: '#22c55e' },
-      { source: 'Trading', target: 'Loss', value: 1200, color: '#ef4444' },
-      { source: 'Trading', target: 'Commission', value: 300, color: '#f59e0b' },
-      { source: 'Profit', target: 'Final Balance', value: 3500, color: '#22c55e' },
-      { source: 'Loss', target: 'Final Balance', value: 1200, color: '#ef4444' },
-      { source: 'Commission', target: 'Final Balance', value: 300, color: '#f59e0b' },
-    ]
+    maxDrawdown: 0,
+    currentDrawdown: 0,
   })
   const [hasOrders, setHasOrders] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -145,7 +92,6 @@ export default function DashboardPage() {
         setHasOrders(orders.length > 0);
       } catch (err) {
         console.error('Error checking orders:', err);
-        // Don't set error here to allow dashboard to load even if order check fails
       }
     };
 
@@ -165,41 +111,30 @@ export default function DashboardPage() {
         })
 
         const data = await response.json()
-        setAccountDetails(data.account_info)
+        setAccountDetails({
+          balance: data.account_info.balance,
+          equity: data.account_info.equity,
+          totalTrades: data.history.length,
+          drawdown: data.account_info.drawdown,
+        });
         
         // Transform trade history data
-        const formattedTrades = (data.history as TradeDetail[])
-          .filter(trade => trade.profit !== 0)
-          .map(trade => ({
-            id: trade.openTime, // Assuming openTime is unique for each trade
-            symbol: trade.symbol,
-            type: trade.action,
-            openPrice: trade.openPrice,
-            profit: trade.profit,
-            date: trade.openTime,
-            volume: trade.sizing.value
-          }))
+        const formattedTrades = data.history.map((trade: TradeDetail) => ({
+          id: trade.openTime,
+          symbol: trade.symbol,
+          type: trade.action,
+          openPrice: trade.openPrice,
+          profit: trade.profit,
+          date: trade.openTime,
+          volume: trade.sizing.value
+        }));
         setTradeHistory(formattedTrades)
 
-        // Create performance data from trade history
-        const perfData = (data.trade_details as TradeDetail[])
-          .filter(trade => trade.date)
-          .reduce<PerformanceData[]>((acc, trade) => {
-            const date = trade.date
-            const existingEntry = acc.find(entry => entry.period === date)
-            if (existingEntry) {
-              existingEntry.accountBalance += trade.profit
-              existingEntry.portfolioEquity = existingEntry.accountBalance
-            } else {
-              acc.push({
-                period: date,
-                accountBalance: data.account_details.balance,
-                portfolioEquity: data.account_details.equity
-              })
-            }
-            return acc
-          }, [])
-        setPerformanceData(perfData)
+        // Set drawdown data
+        setDrawdownData({
+          maxDrawdown: data.account_info.drawdown,
+          currentDrawdown: data.account_info.drawdown, // Assuming current drawdown is the same as max drawdown for simplicity
+        });
 
         setIsLoading(false)
       } catch (error) {
@@ -208,7 +143,6 @@ export default function DashboardPage() {
       }
     }
 
-    // Only fetch dashboard data if we have orders
     if (hasOrders) {
       fetchData();
     }
@@ -218,25 +152,8 @@ export default function DashboardPage() {
     return balance ? `$${balance.toLocaleString()}` : '$0'
   }
 
-  const formatPercentage = (value?: number) => {
-    return value ? `${value.toFixed(2)}%` : '0%'
-  }
-
-  const calculateWinRate = (trades: FormattedTrade[]) => {
-    if (!trades.length) return '0%'
-    const winRate = (trades.filter(t => t.profit > 0).length / trades.length) * 100
-    return `${winRate.toFixed(1)}%`
-  }
-
-  const calculateNetProfit = (trades: FormattedTrade[]) => {
-    const total = trades.reduce((sum, trade) => sum + trade.profit, 0)
-    return `$${total.toLocaleString()}`
-  }
-
-  const calculateDrawdown = (trades: FormattedTrade[], balance?: number) => {
-    if (!trades.length || !balance) return '0%'
-    const minProfit = Math.min(...trades.map(trade => trade.profit))
-    return `${((minProfit / balance) * 100).toFixed(2)}%`
+  const calculateDrawdown = (drawdown?: number) => {
+    return drawdown ? `${drawdown.toFixed(2)}%` : '0%'
   }
 
   if (isLoading && hasOrders !== false) {
@@ -269,7 +186,6 @@ export default function DashboardPage() {
     );
   }
 
-  // If we've confirmed there are no orders, show trading challenge
   if (hasOrders === false) {
     return <TradingChallenge />;
   }
@@ -282,8 +198,22 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, type: "spring" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-4"
         >
+          <OverviewCard
+            title="Account Size"
+            value={formatBalance(accountDetails?.equity)}
+            change=""
+            icon={<DollarSign className="h-5 w-5 text-blue-400" />}
+            trend="up"
+          />
+          <OverviewCard
+            title="Profit Target"
+            value="10%"
+            change=""
+            icon={<Percent className="h-5 w-5 text-green-400" />}
+            trend="up"
+          />
           <OverviewCard
             title="Account Balance"
             value={formatBalance(accountDetails?.balance)}
@@ -293,28 +223,14 @@ export default function DashboardPage() {
           />
           <OverviewCard
             title="Total Trades" 
-            value={tradeHistory.length.toString()}
+            value={accountDetails?.totalTrades.toString()}
             change=""
             icon={<Activity className="h-5 w-5 text-purple-400" />}
-            trend="up"
-          /> 
-          <OverviewCard 
-            title="Win Rate" 
-            value={calculateWinRate(tradeHistory)}
-            change=""
-            icon={<Target className="h-5 w-5 text-green-400" />}
-            trend="up"
-          />
-          <OverviewCard
-            title="Net Profit"
-            value={calculateNetProfit(tradeHistory)}
-            change=""
-            icon={<TrendingUp className="h-5 w-5 text-orange-400" />}
             trend="up"
           />
           <OverviewCard
             title="Daily Drawdown"
-            value={calculateDrawdown(tradeHistory, accountDetails?.balance)}
+            value={calculateDrawdown(drawdownData.currentDrawdown)}
             change=""
             icon={<AlertTriangle className="h-5 w-5 text-red-400" />}
             trend="up"
@@ -325,7 +241,6 @@ export default function DashboardPage() {
           orderId={localStorage.getItem('selectedAccountId') || ""}
         />
 
-        {/* Recent Trades Table */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
