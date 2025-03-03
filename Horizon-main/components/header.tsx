@@ -67,12 +67,12 @@ export function Header({ isAdmin, onAccountSwitch }: HeaderProps) {
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }
-        })
+        }) 
         const data = await response.json()
         setAccounts(Array.isArray(data) ? data : [])
         
         if (data.length > 0 && !selectedAccountId) {
-          const firstAccount = data[0]
+          const firstAccount = data[0] 
           const numericId = firstAccount.order_id.replace(/[^\d]/g, '')
           handleAccountSwitch({
             id: firstAccount.order_id,
