@@ -1,6 +1,5 @@
 import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { OverviewCard } from "@/components/overview-card"
+import { Card } from "@/components/ui/card"
 import { Users, ShoppingCart, CheckCircle, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
@@ -40,37 +39,27 @@ export function AdminOverview({ onSelectSection, selectedSection }: AdminOvervie
           {
             title: "Total Users",
             icon: <Users className="h-5 w-5 text-blue-500" />,
-            gradient: "from-blue-500/10 to-purple-500/10",
-            border: "border-blue-500/20",
-            graphData: [totalUsers]
+            value: totalUsers
           },
           {
             title: "Total Orders",
             icon: <ShoppingCart className="h-5 w-5 text-orange-500" />,
-            gradient: "from-orange-500/10 to-red-500/10",
-            border: "border-orange-500/20",
-            graphData: [totalOrders]
+            value: totalOrders
           },
           {
             title: "Completed Orders",
             icon: <CheckCircle className="h-5 w-5 text-teal-500" />,
-            gradient: "from-teal-500/10 to-cyan-500/10",
-            border: "border-teal-500/20",
-            graphData: [completedOrders]
+            value: completedOrders
           },
           {
             title: "Failed Orders",
             icon: <XCircle className="h-5 w-5 text-red-500" />,
-            gradient: "from-red-500/10 to-pink-500/10",
-            border: "border-red-500/20",
-            graphData: [failedOrders]
+            value: failedOrders
           },
           {
             title: "Rejected Orders",
             icon: <XCircle className="h-5 w-5 text-yellow-500" />,
-            gradient: "from-yellow-500/10 to-orange-500/10",
-            border: "border-yellow-500/20",
-            graphData: [rejectedOrders]
+            value: rejectedOrders
           }
         ].map((item, index) => (
           <motion.div
@@ -81,16 +70,13 @@ export function AdminOverview({ onSelectSection, selectedSection }: AdminOvervie
             whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.98 }}
           >
-            <OverviewCard
-              title={item.title}
-              icon={item.icon}
-              className={`bg-gradient-to-br ${item.gradient} ${item.border} hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300`}
-            >
-              <div className="text-lg font-bold">{item.graphData[0]}</div> {/* Display the number in the card */}
-              <div className="h-10 bg-gray-200 rounded">
-                <div className="h-full bg-blue-500" style={{ width: `${item.graphData[0]}%` }} />
+            <Card className="flex flex-col items-center p-4 bg-white shadow-lg rounded-lg">
+              <div className="flex items-center mb-2">
+                {item.icon}
+                <h3 className="ml-2 text-lg font-semibold">{item.title}</h3>
               </div>
-            </OverviewCard>
+              <div className="text-2xl font-bold">{item.value}</div>
+            </Card>
           </motion.div>
         ))}
       </motion.div>
