@@ -38,7 +38,7 @@ export default function LoginPage() {
         const token = "your-secure-token"
         document.cookie = `admin-token=${token}; path=/`
         localStorage.setItem('admin-token', token)
-        router.push("/dashboard/admin")
+        router.push("/adminportal")
       } else {
         setError("Invalid credentials")
       }

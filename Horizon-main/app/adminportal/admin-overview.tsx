@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { OverviewCard } from "@/components/overview-card"
 import { Users, ShoppingCart, CheckCircle, XCircle } from "lucide-react"
@@ -11,22 +11,30 @@ interface AdminOverviewProps {
 }
 
 export function AdminOverview({ onSelectSection, selectedSection }: AdminOverviewProps) {
-  const [totalOrders, setTotalOrders] = useState(0);
-  const [completedOrders, setCompletedOrders] = useState(0);
-  const [failedOrders] = useState(0); // Set to 0 as per instruction
-  const [rejectedOrders] = useState(0); // Set to 0 as per instruction
-  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0)
+  const [completedOrders, setCompletedOrders] = useState(0)
+  const [failedOrders, setFailedOrders] = useState(0)
+  const [rejectedOrders, setRejectedOrders] = useState(0)
+  const [totalUsers, setTotalUsers] = useState(0)
 
   useEffect(() => {
     fetch("https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/stats")
       .then((response) => response.json())
       .then((data) => {
-        setTotalUsers(data.total_users);
-        setTotalOrders(data.total_orders);
-        setCompletedOrders(data.completed_orders);
+        setTotalOrders(data.total_orders || 0)
+        setCompletedOrders(data.completed_orders || 0)
+        setFailedOrders(data.failed_orders || 0)
+        setRejectedOrders(data.rejected_orders || 0) // Assuming the API provides rejected orders
       })
-      .catch((error) => console.error("Error fetching order stats:", error));
-  }, []);
+      .catch((error) => console.error("Error fetching order stats:", error))
+
+    fetch("https://fundedhorizon-back-65a0759eedf9.herokuapp.com/user/stats")
+      .then((response) => response.json())
+      .then((data) => {
+        setTotalUsers(data.total_users || 0)
+      })
+      .catch((error) => console.error("Error fetching user stats:", error))
+  }, [])
 
   return (
     <div className="space-y-8">
@@ -67,7 +75,7 @@ export function AdminOverview({ onSelectSection, selectedSection }: AdminOvervie
           },
           {
             title: "Rejected Orders",
-            icon: <XCircle className="h-5 w-5 text-yellow-500" />,
+            icon: <XCircle className="h-5 w-5 text-yellow-500" />, // Assuming a different icon for rejected orders
             gradient: "from-yellow-500/10 to-orange-500/10",
             border: "border-yellow-500/20",
             graphData: [rejectedOrders]
@@ -86,7 +94,7 @@ export function AdminOverview({ onSelectSection, selectedSection }: AdminOvervie
               icon={item.icon}
               className={`bg-gradient-to-br ${item.gradient} ${item.border} hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300`}
             >
-              <div className="text-lg font-bold">{item.graphData[0]}</div> {/* Display the number in the card */}
+              {/* Render histogram graph using item.graphData */}
               <div className="h-10 bg-gray-200 rounded">
                 <div className="h-full bg-blue-500" style={{ width: `${item.graphData[0]}%` }} />
               </div>

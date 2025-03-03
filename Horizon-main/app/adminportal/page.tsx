@@ -4,7 +4,6 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { AdminOverview } from "@/components/admin-overview"
 import { AdminTables } from "@/components/admin-tables"
-import { Header } from "@/components/header"
 
 export default function AdminDashboard() {
   const [selectedSection, setSelectedSection] = useState<
@@ -18,7 +17,6 @@ export default function AdminDashboard() {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-orange-500/5 blur-3xl" />
       </div>
 
-      <Header />
 
       <div className="container py-6 px-4 md:px-6 relative z-10">
         <motion.h1

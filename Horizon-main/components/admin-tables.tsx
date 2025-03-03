@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Search, XCircle, CreditCard, Hash, Shield, LineChart } from "lucide-react" 
+import { Search, XCircle, CreditCard, Hash, Shield, LineChart, ChevronDown } from "lucide-react" 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +17,18 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+
+enum RejectReasons {
+  INSUFFICIENT_FUNDS = "Insufficient Funds",
+  INVALID_ACCOUNT = "Invalid Account",
+  FRAUD_SUSPECTED = "Fraud Suspected",
+}
+
+enum FailReasons {
+  NETWORK_ERROR = "Network Error",
+  SERVER_ERROR = "Server Error",
+  TIMEOUT = "Timeout",
+}
 
 interface OrderDetails {
   id: number
@@ -99,17 +111,21 @@ const mockOrders: OrderDetails[] = [
 ]
 
 interface AdminTablesProps {
-  selectedSection: "users" | "orders" | "completedOrders" | "failedOrders" | null
+  selectedSection: "users" | "orders" | "completedOrders" | "failedOrders" | "analytics" | "reports" | null
 }
 
 export function AdminTables({ selectedSection }: AdminTablesProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [orders, setOrders] = useState(mockOrders)
   const [completedOrders, setCompletedOrders] = useState<OrderDetails[]>([])
+  const [failedOrders, setFailedOrders] = useState<OrderDetails[]>([])
+  const [rejectedOrders, setRejectedOrders] = useState<OrderDetails[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [selectedPaymentProof, setSelectedPaymentProof] = useState<string | null>(null)
   const [editedOrder, setEditedOrder] = useState<OrderDetails | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [showRejectReasons, setShowRejectReasons] = useState<{ [key: number]: boolean }>({});
+  const [showFailReasons, setShowFailReasons] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const checkMobile = () => {
@@ -157,6 +173,8 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           platformLogin: order.platform_login,
           platformPassword: order.platform_password,
           server: order.server,
+          sessionId: order.session_id,
+          terminalId: order.terminal_id,
           startingBalance: parseInt(order.account_size),
           currentBalance: parseInt(order.account_size),
           paymentMethod: order.payment_method,
@@ -199,6 +217,54 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
         setOrders(pendingOrders)
       })
       .catch((error) => console.error("Error fetching orders:", error))
+
+    // Fetch failed orders
+    fetch("https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/failed_orders")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedFailedOrders = data.map((order: any) => ({
+          id: order.fail_order_id,
+          orderId: order.order_id,
+          user: {
+            name: order.username,
+            email: order.email,
+          },
+          amount: order.account_size,
+          status: "Failed",
+          createdAt: new Date().toISOString().split("T")[0],
+          accountType: order.challenge_type,
+          platformType: order.platform,
+          paymentMethod: order.payment_method,
+          txid: order.txid,
+          reason: order.reason
+        }))
+        setFailedOrders(formattedFailedOrders)
+      })
+      .catch((error) => console.error("Error fetching failed orders:", error))
+
+    // Fetch rejected orders
+    fetch("https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/rejected_orders")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedRejectedOrders = data.map((order: any) => ({
+          id: order.reject_order_id,
+          orderId: order.order_id,
+          user: {
+            name: order.username,
+            email: order.email,
+          },
+          amount: order.account_size,
+          status: "Rejected",
+          createdAt: new Date().toISOString().split("T")[0],
+          accountType: order.challenge_type,
+          platformType: order.platform,
+          paymentMethod: order.payment_method,
+          txid: order.txid,
+          reason: order.reason
+        }))
+        setRejectedOrders(formattedRejectedOrders)
+      })
+      .catch((error) => console.error("Error fetching rejected orders:", error))
   }, [])
 
   const handleEditOrder = (order: OrderDetails) => {
@@ -277,7 +343,47 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
     }
   }
 
-  const filteredOrders = (selectedSection === "completedOrders" ? completedOrders : orders).filter(
+  const handleRejectOrder = async (order: OrderDetails, reason: RejectReasons) => {
+    try {
+      const formData = new FormData();
+      formData.append('reason', reason);
+      const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/reject_order/${order.id}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        alert(`Order ${order.id} rejected due to: ${reason}`);
+        // Optionally, update local state to reflect rejection
+      } else {
+        console.error('Failed to reject order');
+      }
+    } catch (error) {
+      console.error('Error rejecting order:', error);
+    }
+  }
+
+  const handleFailOrder = async (order: OrderDetails, reason: FailReasons) => {
+    try {
+      const formData = new FormData();
+      formData.append('reason', reason);
+      const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/fail_order/${order.id}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        alert(`Order ${order.id} failed due to: ${reason}`);
+        // Optionally, update local state to reflect failure
+      } else {
+        console.error('Failed to fail order');
+      }
+    } catch (error) {
+      console.error('Error failing order:', error);
+    }
+  }
+
+  const filteredOrders = (selectedSection === "completedOrders" ? completedOrders : selectedSection === "failedOrders" ? failedOrders : selectedSection === "rejectedOrders" ? rejectedOrders : orders).filter(
     (order) =>
       order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -335,6 +441,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       case "orders":
       case "completedOrders":
       case "failedOrders":
+      case "rejectedOrders":
         return (
           <div className="overflow-x-auto">
             <div className="mb-4">
@@ -592,6 +699,60 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
                               >
                                 Save changes
                               </Button>
+                              <div className="flex flex-col">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => {
+                                    setShowRejectReasons(prev => ({ ...prev, [order.id]: !prev[order.id] }));
+                                  }}
+                                  className="w-full md:w-auto flex items-center justify-between"
+                                >
+                                  Reject <ChevronDown className={`transform transition-transform ${showRejectReasons[order.id] ? 'rotate-180' : ''}`} />
+                                </Button>
+                                {showRejectReasons[order.id] && (
+                                  <div className="flex flex-col">
+                                    {Object.values(RejectReasons).map(reason => (
+                                      <Button 
+                                        key={reason} 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => handleRejectOrder(order, reason)}
+                                        className="w-full md:w-auto"
+                                      >
+                                        {reason}
+                                      </Button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex flex-col">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => {
+                                    setShowFailReasons(prev => ({ ...prev, [order.id]: !prev[order.id] }));
+                                  }}
+                                  className="w-full md:w-auto flex items-center justify-between"
+                                >
+                                  Fail <ChevronDown className={`transform transition-transform ${showFailReasons[order.id] ? 'rotate-180' : ''}`} />
+                                </Button>
+                                {showFailReasons[order.id] && (
+                                  <div className="flex flex-col">
+                                    {Object.values(FailReasons).map(reason => (
+                                      <Button 
+                                        key={reason} 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => handleFailOrder(order, reason)}
+                                        className="w-full md:w-auto"
+                                      >
+                                        {reason}
+                                      </Button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>
