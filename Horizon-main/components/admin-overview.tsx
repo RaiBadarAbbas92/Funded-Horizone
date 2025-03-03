@@ -70,12 +70,12 @@ export function AdminOverview({ onSelectSection, selectedSection }: AdminOvervie
             whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.98 }}
           >
-            <Card className="flex flex-col items-center p-4 bg-white shadow-lg rounded-lg">
+            <Card className="flex flex-col items-center p-4 bg-gray-800 shadow-lg rounded-lg">
               <div className="flex items-center mb-2">
                 {item.icon}
-                <h3 className="ml-2 text-lg font-semibold">{item.title}</h3>
+                <h3 className="ml-2 text-lg font-semibold text-white">{item.title}</h3>
               </div>
-              <div className="text-2xl font-bold">{item.value}</div>
+              <div className="text-3xl font-bold text-white">{item.value}</div>
             </Card>
           </motion.div>
         ))}
