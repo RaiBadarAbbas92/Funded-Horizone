@@ -74,8 +74,8 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
     }
   },
   'Phase 2': {
-    value: 'Phase 2',
-    label: 'Phase 2',
+    value: 'One-Step',
+    label: 'One-Step',
     description: 'Intermediate level challenge with balanced risk parameters',
     features: ['Flexible trading style', 'Moderate risk limits', 'Weekly payouts'],
     prices: {
@@ -91,8 +91,8 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
     }
   },
   'Phase 1': {
-    value: 'Phase 1',
-    label: 'Phase 1',
+    value: 'Two-Step',
+    label: 'Two-Step',
     description: 'Entry level program perfect for beginning your journey',
     features: ['Basic analysis tools', 'Conservative risk limits', 'Learning resources'],
     prices: {
