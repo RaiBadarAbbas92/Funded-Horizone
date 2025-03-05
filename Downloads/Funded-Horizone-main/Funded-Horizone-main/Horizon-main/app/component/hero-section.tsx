@@ -372,6 +372,10 @@ export default function Hero() {
               </Button>
               <Button 
                 className="group px-8 py-6 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 hover:from-[#1E3A5F]/70 hover:to-[#1E3A5F]/50 text-white rounded-xl text-xl font-semibold border border-[#1E3A5F] hover:border-orange-500/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+                onClick={() => {
+                  const pricingSection = document.getElementById('pricing')
+                  pricingSection?.scrollIntoView({ behavior: 'smooth' })
+                }}
               >
                 View Trading Programs
                 <ArrowRight className="ml-2 w-6 h-6 transition-transform duration-300 group-hover:translate-x-1" />

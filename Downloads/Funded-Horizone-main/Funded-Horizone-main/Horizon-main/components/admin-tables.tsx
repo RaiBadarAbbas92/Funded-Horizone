@@ -31,8 +31,12 @@ interface RunningOrder {
 
 interface User {
   id: number
-  name: string
+  username: string
   email: string
+  name: string
+  country: string
+  phone_no: string
+  address: string
   createdAt: string
 }
 
@@ -120,8 +124,12 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       .then((data) => {
         const formattedUsers = data.map((user: any) => ({
           id: user.id,
-          name: user.name,
+          username: user.username,
           email: user.email,
+          name: user.name,
+          country: user.country,
+          phone_no: user.phone_no,
+          address: user.address,
           createdAt: new Date().toISOString().split("T")[0],
         }))
         setUsers(formattedUsers)
@@ -438,8 +446,10 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="text-xs">Username</TableHead>
                   <TableHead className="text-xs">Name</TableHead>
                   <TableHead className="text-xs">Email</TableHead>
+                  <TableHead className="text-xs">Country</TableHead>
                   {!isMobile && <TableHead className="text-xs">Created At</TableHead>}
                   <TableHead className="text-xs">Actions</TableHead>
                 </TableRow>
@@ -447,8 +457,10 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
               <TableBody>
                 {filteredUsers.map((user) => (
                   <TableRow key={user.id}>
+                    <TableCell className="text-xs">{user.username}</TableCell>
                     <TableCell className="text-xs">{user.name}</TableCell>
                     <TableCell className="text-xs">{user.email}</TableCell>
+                    <TableCell className="text-xs">{user.country}</TableCell>
                     {!isMobile && <TableCell className="text-xs">{user.createdAt}</TableCell>}
                     <TableCell>
                       <div className="flex gap-2">
@@ -466,19 +478,51 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
                               View
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-[95vw] md:max-w-3xl">
+                          <DialogContent className="max-w-[95vw] md:max-w-3xl bg-gray-900 border border-orange-800 shadow-2xl rounded-xl">
                             <DialogHeader>
-                              <DialogTitle className="text-xs">User Details</DialogTitle>
-                              <DialogDescription className="text-xs">
-                                <div>
-                                  <p className="text-xs">Name: {viewUser?.name}</p>
-                                  <p className="text-xs">Email: {viewUser?.email}</p>
-                                  <p className="text-xs">Created At: {viewUser?.createdAt}</p>
+                              <DialogTitle className="text-lg font-bold text-white">User Details</DialogTitle>
+                              <DialogDescription>
+                                <div className="mt-4 space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                      <p className="text-gray-400 text-xs">Username</p>
+                                      <p className="text-white text-sm font-medium">{viewUser?.username}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <p className="text-gray-400 text-xs">Full Name</p>
+                                      <p className="text-white text-sm font-medium">{viewUser?.name}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <p className="text-gray-400 text-xs">Email Address</p>
+                                      <p className="text-white text-sm font-medium">{viewUser?.email}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <p className="text-gray-400 text-xs">Phone Number</p>
+                                      <p className="text-white text-sm font-medium">{viewUser?.phone_no}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <p className="text-gray-400 text-xs">Country</p>
+                                      <p className="text-white text-sm font-medium">{viewUser?.country}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <p className="text-gray-400 text-xs">Created At</p>
+                                      <p className="text-white text-sm font-medium">{viewUser?.createdAt}</p>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <p className="text-gray-400 text-xs">Address</p>
+                                    <p className="text-white text-sm font-medium">{viewUser?.address}</p>
+                                  </div>
                                 </div>
                               </DialogDescription>
                             </DialogHeader>
                             <DialogFooter>
-                              <Button onClick={() => setViewUser(null)} className="text-xs">Close</Button>
+                              <Button 
+                                onClick={() => setViewUser(null)}
+                                className="bg-orange-900 hover:bg-orange-800 text-white text-xs"
+                              >
+                                Close
+                              </Button>
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>
