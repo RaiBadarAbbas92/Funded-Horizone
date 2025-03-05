@@ -18,46 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { EditOrderModal } from "@/components/edit-order-modal"
-
-enum RejectReasons {
-  INSUFFICIENT_FUNDS = "Insufficient Funds",
-  INVALID_ACCOUNT = "Invalid Account",
-  FRAUD_SUSPECTED = "Fraud Suspected",
-}
-
-enum FailReasons {
-  NETWORK_ERROR = "Network Error",
-  SERVER_ERROR = "Server Error",
-  TIMEOUT = "Timeout",
-}
-
-interface OrderDetails {
-  id: number
-  type?: string
-  user: {
-    name: string
-    email: string
-    phone?: string
-  }
-  amount: string
-  status: string
-  createdAt: string
-  accountType?: string
-  platformType?: string
-  platformLogin?: string
-  platformPassword?: string
-  server?: string
-  startingBalance?: number
-  currentBalance?: number
-  profitTarget?: number
-  paymentProof?: string
-  order_id?: string
-  paymentMethod?: string
-  txid?: string
-  sessionId?: string
-  terminalId?: string
-  reason?: string
-}
+import { OrderDetails, OrderStatus, OrderType, RejectReasons, FailReasons } from "@/types/order"
 
 interface RunningOrder {
   order_id: string
@@ -84,7 +45,8 @@ const mockOrders: OrderDetails[] = [
       phone: "+1234567890",
     },
     amount: "$1000",
-    status: "Completed",
+    status: OrderStatus.COMPLETED,
+    type: OrderType.STANDARD,
     createdAt: "2023-04-05",
     accountType: "Challenge Phase-1",
     platformType: "MT4",
@@ -106,7 +68,8 @@ const mockOrders: OrderDetails[] = [
       phone: "+1987654321",
     },
     amount: "$1500",
-    status: "Pending",
+    status: OrderStatus.PENDING,
+    type: OrderType.STANDARD,
     createdAt: "2023-04-10",
     accountType: "Challenge Phase-2",
     platformType: "MT5",
@@ -179,14 +142,14 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       .then((data) => {
         const formattedCompletedOrders = data.map((order: any) => ({
           id: order.complete_order_id,
-          type: order.type || 'standard',
+          type: order.type as OrderType || OrderType.STANDARD,
           order_id: order.order_id,
           user: {
             name: order.username,
             email: "",
           },
           amount: order.account_size,
-          status: "Completed",
+          status: OrderStatus.COMPLETED,
           createdAt: new Date().toISOString().split("T")[0],
           accountType: order.challenge_type,
           platformType: order.platform,
@@ -210,13 +173,13 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       .then((data) => {
         const formattedOrders = data.map((order: any) => ({
           id: order.id,
-          type: order.type || 'standard',
+          type: order.type as OrderType || OrderType.STANDARD,
           user: {
             name: order.username,
             email: order.email,
           },
           amount: order.account_size,
-          status: "Pending",
+          status: OrderStatus.PENDING,
           createdAt: new Date().toISOString().split("T")[0],
           accountType: order.challenge_type,
           platformType: order.platform,
@@ -244,14 +207,14 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       .then((data) => {
         const formattedFailedOrders = data.map((order: any) => ({
           id: order.fail_order_id,
-          type: order.type || 'standard',
+          type: order.type as OrderType || OrderType.STANDARD,
           order_id: order.order_id,
           user: {
             name: order.username,
             email: order.email,
           },
           amount: order.account_size,
-          status: "Failed",
+          status: OrderStatus.CANCELLED,
           createdAt: new Date().toISOString().split("T")[0],
           accountType: order.challenge_type,
           platformType: order.platform,
@@ -346,6 +309,18 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
   };
 
   const handleSaveChanges = async (order: OrderDetails) => {
+    // Store the edited order temporarily
+    const updatedOrders = orders.map(o => {
+      if (o.id === order.id) {
+        return { ...o, ...order }
+      }
+      return o
+    })
+    setOrders(updatedOrders)
+    setEditedOrder(null)
+  }
+
+  const handleConfirmOrder = async (order: OrderDetails) => {
     try {
       // Prepare request body with required fields
       const formData = new FormData()
@@ -355,10 +330,10 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       formData.append('session_id', order.sessionId || '')
       formData.append('terminal_id', order.terminalId || '')
 
-      // Extract numeric part from order ID (e.g., "FDH4" -> "4")
+      // Extract numeric part from order ID
       const orderId = order.id.toString().replace(/[^\d]/g, '')
 
-      // Call the complete order endpoint with numeric order_id
+      // Call the complete order endpoint
       const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/complete_order/${orderId}`, {
         method: 'POST',
         body: formData
@@ -372,12 +347,9 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
         // Add to completed orders
         const completedOrder = {
           ...order,
-          status: 'Completed'
+          status: OrderStatus.COMPLETED
         }
         setCompletedOrders(prev => [...prev, completedOrder])
-        
-        // Close dialog
-        setEditedOrder(null)
 
         // Show success message
         alert('Order completed successfully!')
@@ -388,29 +360,6 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
     } catch (error) {
       console.error('Error completing order:', error)
       alert('Failed to complete order. Please try again.')
-    }
-  }
-
-  const handleConfirmOrder = async (order: OrderDetails) => {
-    try {
-      const formData = new FormData()
-      formData.append('platform-login', order.platformLogin || '')
-      formData.append('platform-password', order.platformPassword || '')
-      formData.append('server', order.server || '')
-
-      const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/update/${order.id}`, {
-        method: 'POST',
-        body: formData
-      })
-
-      if (response.ok) {
-        const updatedOrder = {...order, status: 'Completed'}
-        const updatedOrders = orders.filter(o => o.id !== order.id)
-        setOrders(updatedOrders)
-        setCompletedOrders([...completedOrders, updatedOrder])
-      }
-    } catch (error) {
-      console.error('Error updating order:', error)
     }
   }
 

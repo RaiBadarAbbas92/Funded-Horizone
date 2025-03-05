@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { CreditCard, Shield, LineChart, ChevronDown } from "lucide-react"
+import { OrderDetails, OrderStatus, OrderType, RejectReasons, FailReasons } from "@/types/order"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -14,66 +15,25 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-enum FailReasons {
-  NETWORK_ERROR = "Network Error",
-  SERVER_ERROR = "Server Error",
-  TIMEOUT = "Timeout",
-}
-
-enum OrderStatus {
-  PENDING = "Pending",
-  COMPLETED = "Completed",
-  CANCELLED = "Cancelled",
-}
-
-enum OrderType {
-  LIMIT = "Limit",
-  MARKET = "Market",
-}
-
-interface OrderDetails {
-  id: number
-  user: {
-    name: string
-    email: string
-    phone?: string
-  }
-  amount: string
-  status: OrderStatus
-  type: OrderType
-  createdAt: string
-  accountType?: string
-  platformType?: string
-  platformLogin?: string
-  platformPassword?: string
-  server?: string
-  startingBalance?: number
-  currentBalance?: number
-  profitTarget?: number
-  paymentProof?: string
-  order_id?: string
-  paymentMethod?: string
-  txid?: string
-  sessionId?: string
-  terminalId?: string
-}
-
 interface EditOrderModalProps {
   order: OrderDetails
   onSave: (order: OrderDetails) => Promise<void>
   onFail: (order: OrderDetails, reason: FailReasons) => Promise<void>
+  onReject: (order: OrderDetails, reason: RejectReasons) => Promise<void>
 }
 
-export function EditOrderModal({ order, onSave, onFail }: EditOrderModalProps) {
+export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderModalProps) {
   const [editedOrder, setEditedOrder] = useState<OrderDetails>(order)
   const [showFailReasons, setShowFailReasons] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const handleSaveChanges = async () => {
     await onSave(editedOrder)
+    setOpen(false)
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
           variant="outline"
