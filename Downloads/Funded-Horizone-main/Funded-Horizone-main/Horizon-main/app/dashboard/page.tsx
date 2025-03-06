@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Activity, DollarSign, Percent, AlertTriangle } from "lucide-react"
 import { ResponsiveSankey } from '@nivo/sankey'
@@ -33,6 +33,7 @@ interface AccountDetail {
   equity: number
   totalTrades: number
   drawdown: number
+  profit: number
 }
 
 interface FormattedTrade {
@@ -83,6 +84,16 @@ export default function DashboardPage() {
   const [sessionId, setSessionId] = useState('');
   const [terminalId, setTerminalId] = useState('');
 
+  // Add mounted ref to track component mount status
+  const isMounted = useRef(true);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   // Initialize sessionId and terminalId from localStorage
   useEffect(() => {
     setSessionId(localStorage.getItem('session_id') || '');
@@ -91,6 +102,8 @@ export default function DashboardPage() {
 
   const fetchData = async () => {
     try {
+      if (!isMounted.current) return;
+
       const formData = new FormData()
       formData.append('session', sessionId)
       formData.append('account_id', terminalId)
@@ -100,42 +113,80 @@ export default function DashboardPage() {
         body: formData
       })
 
+      if (!isMounted.current) return;
+
+      if (!response.ok) {
+        setAccountDetails({
+          balance: 0,
+          equity: 0,
+          totalTrades: 0,
+          drawdown: 0,
+          profit: 0,
+        });
+        setTradeHistory([]);
+        setDrawdownData({
+          maxDrawdown: 0,
+          currentDrawdown: 0,
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const data = await response.json()
+      
+      if (!isMounted.current) return;
+
       setAccountDetails({
-        balance: data.account_info.balance,
-        equity: data.account_info.equity,
-        totalTrades: data.history.length,
-        drawdown: data.account_info.drawdown,
+        balance: data.account_info?.balance || 0,
+        equity: data.account_info?.equity || 0,
+        totalTrades: data.history?.length || 0,
+        drawdown: data.account_info?.drawdown || 0,
+        profit: data.account_info?.profit || 0,
       });
       
-      // Transform trade history data
-      const formattedTrades = data.history.map((trade: TradeDetail) => ({
-        id: trade.openTime,
-        symbol: trade.symbol,
-        type: trade.action,
-        openPrice: trade.openPrice,
-        profit: trade.profit,
-        date: trade.openTime,
-        volume: trade.sizing.value
+      const formattedTrades = (data.history || []).map((trade: TradeDetail) => ({
+        id: trade.openTime || '',
+        symbol: trade.symbol || '',
+        type: trade.action || '',
+        openPrice: trade.openPrice || 0,
+        profit: trade.profit || 0,
+        date: trade.openTime || '',
+        volume: trade.sizing?.value || 0
       }));
-      setTradeHistory(formattedTrades)
 
-      // Set drawdown data
+      if (!isMounted.current) return;
+      
+      setTradeHistory(formattedTrades);
       setDrawdownData({
-        maxDrawdown: data.account_info.drawdown,
-        currentDrawdown: data.account_info.drawdown,
+        maxDrawdown: data.account_info?.drawdown || 0,
+        currentDrawdown: data.account_info?.drawdown || 0,
       });
-
-      setIsLoading(false)
+      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching data:', error)
-      setIsLoading(false)
+      console.error('Error fetching data:', error);
+      if (!isMounted.current) return;
+      
+      setAccountDetails({
+        balance: 0,
+        equity: 0,
+        totalTrades: 0,
+        drawdown: 0,
+        profit: 0,
+      });
+      setTradeHistory([]);
+      setDrawdownData({
+        maxDrawdown: 0,
+        currentDrawdown: 0,
+      });
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
     const checkOrders = async () => {
       try {
+        if (!isMounted.current) return;
+
         const token = localStorage.getItem('access_token');
         if (!token) {
           setError('No access token found');
@@ -149,14 +200,22 @@ export default function DashboardPage() {
           }
         });
 
+        if (!isMounted.current) return;
+
         if (!response.ok) {
-          throw new Error('Failed to fetch orders');
+          setHasOrders(false);
+          return;
         }
 
         const orders: Order[] = await response.json();
-        setHasOrders(orders.length > 0);
+        if (isMounted.current) {
+          setHasOrders(orders.length > 0);
+        }
       } catch (err) {
         console.error('Error checking orders:', err);
+        if (isMounted.current) {
+          setHasOrders(false);
+        }
       }
     };
 
@@ -164,14 +223,17 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (hasOrders) {
+    if (hasOrders && isMounted.current) {
       fetchData();
     }
   }, [hasOrders]);
 
-  // Listen for storage changes
   useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
     const handleStorageChange = () => {
+      if (!isMounted.current) return;
+      
       const newSessionId = localStorage.getItem('session_id') || '';
       const newTerminalId = localStorage.getItem('terminal_id') || '';
       
@@ -183,11 +245,8 @@ export default function DashboardPage() {
       }
     };
 
-    // Add event listener for storage changes
     window.addEventListener('storage', handleStorageChange);
-    
-    // Also check for changes every second
-    const interval = setInterval(handleStorageChange, 1000);
+    interval = setInterval(handleStorageChange, 1000);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
@@ -195,9 +254,8 @@ export default function DashboardPage() {
     };
   }, [sessionId, terminalId]);
 
-  // Fetch data when sessionId or terminalId changes
   useEffect(() => {
-    if (sessionId && terminalId) {
+    if (sessionId && terminalId && isMounted.current) {
       fetchData();
     }
   }, [sessionId, terminalId]);
@@ -252,42 +310,31 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, type: "spring" }}
-          className="grid grid-cols-1 lg:grid-cols-5 gap-4"
+          className="grid grid-cols-1 lg:grid-cols-4 gap-4"
         >
           <OverviewCard
-            title="Account Size"
-            value={formatBalance(accountDetails?.equity)}
-            change=""
-            icon={<DollarSign className="h-5 w-5 text-blue-400" />}
-            trend="up"
-          />
-          <OverviewCard
-            title="Profit Target"
-            value="10%"
+            title="Profit"
+            value={formatBalance(accountDetails?.profit)}
             change=""
             icon={<Percent className="h-5 w-5 text-green-400" />}
-            trend="up"
           />
           <OverviewCard
             title="Account Balance"
             value={formatBalance(accountDetails?.balance)}
             change=""
             icon={<DollarSign className="h-5 w-5 text-blue-400" />}
-            trend="up"
           />
           <OverviewCard
             title="Total Trades" 
-            value={accountDetails?.totalTrades.toString()}
+            value={accountDetails?.totalTrades?.toString() || "0"}
             change=""
             icon={<Activity className="h-5 w-5 text-purple-400" />}
-            trend="up"
           />
           <OverviewCard
             title="Daily Drawdown"
             value={calculateDrawdown(drawdownData.currentDrawdown)}
             change=""
             icon={<AlertTriangle className="h-5 w-5 text-red-400" />}
-            trend="up"
           />
         </motion.div>
 

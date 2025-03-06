@@ -132,7 +132,9 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           address: user.address,
           createdAt: new Date().toISOString().split("T")[0],
         }))
-        setUsers(formattedUsers)
+        // Sort users by ID in descending order (newest first)
+        const sortedUsers = formattedUsers.sort((a: User, b: User) => b.id - a.id);
+        setUsers(sortedUsers);
       })
       .catch((error) => console.error("Error fetching users:", error))
 
@@ -317,15 +319,49 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
   };
 
   const handleSaveChanges = async (order: OrderDetails) => {
-    // Store the edited order temporarily
-    const updatedOrders = orders.map(o => {
-      if (o.id === order.id) {
-        return { ...o, ...order }
+    try {
+      if (selectedSection === "completedOrders") {
+        // Handle editing completed order
+        const formData = new FormData();
+        formData.append('server', order.server || '');
+        formData.append('platform_login', order.platformLogin || '');
+        formData.append('platform_password', order.platformPassword || '');
+        formData.append('session_id', order.sessionId || '');
+        formData.append('terminal_id', order.terminalId || '');
+
+        const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/edit_complete_order/${order.id}`, {
+          method: 'PUT',
+          body: formData
+        });
+
+        if (response.ok) {
+          // Update the completed orders list
+          const updatedOrders = completedOrders.map(o => {
+            if (o.id === order.id) {
+              return { ...o, ...order };
+            }
+            return o;
+          });
+          setCompletedOrders(updatedOrders);
+          alert('Completed order updated successfully!');
+        } else {
+          throw new Error('Failed to update completed order');
+        }
+      } else {
+        // Handle regular pending orders
+        const updatedOrders = orders.map(o => {
+          if (o.id === order.id) {
+            return { ...o, ...order };
+          }
+          return o;
+        });
+        setOrders(updatedOrders);
       }
-      return o
-    })
-    setOrders(updatedOrders)
-    setEditedOrder(null)
+      setEditedOrder(null);
+    } catch (error) {
+      console.error('Error updating order:', error);
+      alert('Failed to update order. Please try again.');
+    }
   }
 
   const handleConfirmOrder = async (order: OrderDetails) => {
@@ -601,14 +637,14 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">Name</TableHead> {/* Added Name column */}
+                  <TableHead className="text-xs">Name</TableHead>
                   <TableHead className="text-xs">User</TableHead>
                   <TableHead className="text-xs">Email</TableHead>
                   <TableHead className="text-xs">Order ID</TableHead>
                   <TableHead className="text-xs">Account Type</TableHead>
                   <TableHead className="text-xs">Amount</TableHead>
                   <TableHead className="text-xs">Status</TableHead>
-                  <TableHead className="text-xs">Transaction ID</TableHead> {/* Added Transaction ID column */}
+                  <TableHead className="text-xs">Transaction ID</TableHead>
                   {!isMobile && <TableHead className="text-xs">Created At</TableHead>}
                   <TableHead className="text-xs">Actions</TableHead>
                 </TableRow>
@@ -616,14 +652,14 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
               <TableBody>
                 {filteredOrders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="text-xs">{order.user.name}</TableCell> {/* Displaying Name */}
+                    <TableCell className="text-xs">{order.user.name}</TableCell>
                     <TableCell className="text-xs">{order.user.name}</TableCell>
                     <TableCell className="text-xs">{order.user.email}</TableCell>
                     <TableCell className="text-xs">{order.order_id}</TableCell>
                     <TableCell className="text-xs">{order.accountType}</TableCell>
                     <TableCell className="text-xs">{order.amount}</TableCell>
                     <TableCell className="text-xs">{order.status}</TableCell>
-                    <TableCell className="text-xs">{order.txid}</TableCell> {/* Displaying Transaction ID */}
+                    <TableCell className="text-xs">{order.txid}</TableCell>
                     {!isMobile && <TableCell className="text-xs">{order.createdAt}</TableCell>}
                     <TableCell>
                       <div className={`flex ${isMobile ? 'flex-col' : 'flex-wrap'} gap-2`}>
