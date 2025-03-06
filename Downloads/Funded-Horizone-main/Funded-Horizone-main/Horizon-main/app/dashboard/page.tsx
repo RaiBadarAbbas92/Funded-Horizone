@@ -359,7 +359,7 @@ export default function DashboardPage() {
   return (
     <main className="container mx-auto py-8 px-4">
       <Header />
-      <AnimatePresence>
+      <div>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -437,7 +437,7 @@ export default function DashboardPage() {
             </div>
           </Card>
         </motion.div>
-      </AnimatePresence>
+      </div>
     </main>
   )
 }
