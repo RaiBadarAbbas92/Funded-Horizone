@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Search, XCircle, CreditCard, Hash, Shield, LineChart, ChevronDown } from "lucide-react" 
+import { Search, XCircle, CreditCard, Hash, Shield, LineChart, ChevronDown, User, Wallet } from "lucide-react" 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import {
@@ -206,7 +206,9 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
 
         // Filter out orders that are in completedOrders
         const pendingOrders = formattedOrders.filter(
-          (order: OrderDetails) => !completedOrders.some((completedOrder) => completedOrder.order_id === order.id)
+          (order: OrderDetails) => !completedOrders.some((completedOrder) => 
+            completedOrder.order_id && order.id && completedOrder.order_id === order.id.toString()
+          )
         )
         setOrders(pendingOrders)
       })
@@ -517,50 +519,72 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
                           </DialogTrigger>
                           <DialogContent className="max-w-[95vw] md:max-w-3xl bg-gray-900 border border-orange-800 shadow-2xl rounded-xl">
                             <DialogHeader>
-                              <DialogTitle className="text-lg font-bold text-white">User Details</DialogTitle>
-                              <DialogDescription>
-                                <div className="mt-4 space-y-4">
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                      <p className="text-gray-400 text-xs">Username</p>
-                                      <p className="text-white text-sm font-medium">{viewUser?.username}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <p className="text-gray-400 text-xs">Full Name</p>
-                                      <p className="text-white text-sm font-medium">{viewUser?.name}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <p className="text-gray-400 text-xs">Email Address</p>
-                                      <p className="text-white text-sm font-medium">{viewUser?.email}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <p className="text-gray-400 text-xs">Phone Number</p>
-                                      <p className="text-white text-sm font-medium">{viewUser?.phone_no}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <p className="text-gray-400 text-xs">Country</p>
-                                      <p className="text-white text-sm font-medium">{viewUser?.country}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <p className="text-gray-400 text-xs">Created At</p>
-                                      <p className="text-white text-sm font-medium">{viewUser?.createdAt}</p>
-                                    </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <p className="text-gray-400 text-xs">Address</p>
-                                    <p className="text-white text-sm font-medium">{viewUser?.address}</p>
-                                  </div>
+                              <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+                                <div className="p-1.5 bg-orange-900 rounded-lg">
+                                  <CreditCard className="w-5 h-5 text-orange-300" />
                                 </div>
+                                User Details
+                              </DialogTitle>
+                              <DialogDescription className="text-gray-400 text-sm mt-2">
+                                Complete information about the user.
                               </DialogDescription>
                             </DialogHeader>
-                            <DialogFooter>
-                              <Button 
-                                onClick={() => setViewUser(null)}
-                                className="bg-orange-900 hover:bg-orange-800 text-white text-xs"
-                              >
-                                Close
-                              </Button>
-                            </DialogFooter>
+
+                            <div className="mt-6 space-y-6">
+                              {/* User Information */}
+                              <div className="space-y-4">
+                                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                  <User className="h-4 w-4 text-orange-400" />
+                                  User Information
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/20 p-4 rounded-lg border border-gray-800/50">
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Full Name</p>
+                                    <p className="text-sm font-medium text-white">{viewUser?.name}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Email Address</p>
+                                    <p className="text-sm font-medium text-white">{viewUser?.email}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Phone Number</p>
+                                    <p className="text-sm font-medium text-white">{viewUser?.phone_no || 'N/A'}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* User Details */}
+                              <div className="space-y-4">
+                                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                  <User className="h-4 w-4 text-orange-400" />
+                                  User Details
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/20 p-4 rounded-lg border border-gray-800/50">
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Country</p>
+                                    <p className="text-sm font-medium text-white">{viewUser?.country}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Created At</p>
+                                    <p className="text-sm font-medium text-white">{viewUser?.createdAt}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Address */}
+                              <div className="space-y-4">
+                                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                  <User className="h-4 w-4 text-orange-400" />
+                                  Address
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/20 p-4 rounded-lg border border-gray-800/50">
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Address</p>
+                                    <p className="text-sm font-medium text-white">{viewUser?.address}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </DialogContent>
                         </Dialog>
                       </div>
@@ -691,30 +715,179 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
                               View
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-[95vw] md:max-w-3xl">
-                            <DialogHeader>
-                              <DialogTitle className="text-xs">Order and User Details</DialogTitle>
-                              <DialogDescription className="text-xs">
-                                <div>
-                                  <h3 className="text-xs">User Details</h3>
-                                  <p className="text-xs">Name: {viewOrder?.user.name}</p>
-                                  <p className="text-xs">Email: {viewOrder?.user.email}</p>
-                                  <p className="text-xs">Phone: {viewOrder?.user.phone}</p>
+                          <DialogContent className="max-w-[95vw] md:max-w-3xl max-h-[85vh] bg-gradient-to-b from-gray-900 to-gray-950 border border-orange-800/50 shadow-2xl rounded-xl overflow-hidden">
+                            <DialogHeader className="sticky top-0 z-10 p-6 border-b border-orange-800/20 bg-black/20 backdrop-blur-sm">
+                              <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+                                <div className="p-1.5 bg-orange-900/50 rounded-lg shadow-xl ring-1 ring-orange-500/20">
+                                  <CreditCard className="w-5 h-5 text-orange-300" />
                                 </div>
-                                <div>
-                                  <h3 className="text-xs">Order Details</h3>
-                                  <p className="text-xs">Amount: {viewOrder?.amount}</p>
-                                  <p className="text-xs">Status: {viewOrder?.status}</p>
-                                  <p className="text-xs">Created At: {viewOrder?.createdAt}</p>
-                                  <p className="text-xs">Payment Method: {viewOrder?.paymentMethod}</p>
-                                  <p className="text-xs">Transaction ID: {viewOrder?.txid}</p>
-                                </div>
+                                Order Details
+                              </DialogTitle>
+                              <DialogDescription className="text-gray-400 text-sm mt-2">
+                                Complete information about the order and customer.
                               </DialogDescription>
                             </DialogHeader>
-                            <DialogFooter>
-                              <Button onClick={() => setViewOrder(null)} className="text-xs">Close</Button>
-                            </DialogFooter>
+
+                            <div className="overflow-y-auto max-h-[calc(85vh-8rem)] p-6 space-y-6 custom-scrollbar">
+                              {/* Customer Information */}
+                              <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="space-y-4 transform hover:scale-[1.01] transition-transform duration-200"
+                              >
+                                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                  <div className="p-1 bg-blue-500/10 rounded-md ring-1 ring-blue-500/20">
+                                    <User className="h-4 w-4 text-blue-400" />
+                                  </div>
+                                  Customer Information
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/40 p-4 rounded-xl border border-blue-500/20 shadow-xl">
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Full Name</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.user.name}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Email Address</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.user.email}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Phone Number</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.user.phone || 'N/A'}</p>
+                                  </div>
+                                </div>
+                              </motion.div>
+
+                              {/* Order Information */}
+                              <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                                className="space-y-4 transform hover:scale-[1.01] transition-transform duration-200"
+                              >
+                                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                  <div className="p-1 bg-orange-500/10 rounded-md ring-1 ring-orange-500/20">
+                                    <CreditCard className="h-4 w-4 text-orange-400" />
+                                  </div>
+                                  Order Information
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/40 p-4 rounded-xl border border-orange-500/20 shadow-xl">
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Order ID</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.id}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Amount</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.amount}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Status</p>
+                                    <Badge 
+                                      variant="outline" 
+                                      className={
+                                        viewOrder?.status === OrderStatus.COMPLETED
+                                          ? "bg-green-500/10 text-green-400 border-green-500/20"
+                                          : viewOrder?.status === OrderStatus.PENDING
+                                          ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                                          : "bg-red-500/10 text-red-400 border-red-500/20"
+                                      }
+                                    >
+                                      {viewOrder?.status}
+                                    </Badge>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Account Type</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.accountType}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Platform</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.platformType}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Created At</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.createdAt}</p>
+                                  </div>
+                                </div>
+                              </motion.div>
+
+                              {/* Payment Information */}
+                              <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.2 }}
+                                className="space-y-4 transform hover:scale-[1.01] transition-transform duration-200"
+                              >
+                                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                  <div className="p-1 bg-green-500/10 rounded-md ring-1 ring-green-500/20">
+                                    <Wallet className="h-4 w-4 text-green-400" />
+                                  </div>
+                                  Payment Information
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/40 p-4 rounded-xl border border-green-500/20 shadow-xl">
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Payment Method</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.paymentMethod || 'N/A'}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Transaction ID</p>
+                                    <p className="text-sm font-medium text-white">{viewOrder?.txid || 'N/A'}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-gray-400">Starting Balance</p>
+                                    <p className="text-sm font-medium text-white">${viewOrder?.startingBalance?.toLocaleString() || '0'}</p>
+                                  </div>
+                                </div>
+                              </motion.div>
+
+                              {/* Platform Credentials */}
+                              {viewOrder?.platformLogin && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.3, delay: 0.3 }}
+                                  className="space-y-4 transform hover:scale-[1.01] transition-transform duration-200"
+                                >
+                                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                                    <div className="p-1 bg-purple-500/10 rounded-md ring-1 ring-purple-500/20">
+                                      <Shield className="h-4 w-4 text-purple-400" />
+                                    </div>
+                                    Platform Credentials
+                                  </h3>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-black/40 p-4 rounded-xl border border-purple-500/20 shadow-xl">
+                                    <div className="space-y-1">
+                                      <p className="text-xs text-gray-400">Login</p>
+                                      <p className="text-sm font-medium text-white">{viewOrder?.platformLogin}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <p className="text-xs text-gray-400">Server</p>
+                                      <p className="text-sm font-medium text-white">{viewOrder?.server || 'N/A'}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <p className="text-xs text-gray-400">Terminal ID</p>
+                                      <p className="text-sm font-medium text-white">{viewOrder?.terminalId || 'N/A'}</p>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </div>
                           </DialogContent>
+
+                          <style jsx global>{`
+                            .custom-scrollbar::-webkit-scrollbar {
+                              width: 8px;
+                            }
+                            .custom-scrollbar::-webkit-scrollbar-track {
+                              background: rgba(0, 0, 0, 0.2);
+                              border-radius: 4px;
+                            }
+                            .custom-scrollbar::-webkit-scrollbar-thumb {
+                              background: rgba(251, 146, 60, 0.3);
+                              border-radius: 4px;
+                            }
+                            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                              background: rgba(251, 146, 60, 0.5);
+                            }
+                          `}</style>
                         </Dialog>
                       </div>
                     </TableCell>

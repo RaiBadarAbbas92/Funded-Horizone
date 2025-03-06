@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Eye, EyeOff, RefreshCcw, Copy, Check, Server, Globe, Key, User, Wallet } from "lucide-react"
+import { Eye, EyeOff, RefreshCcw, Copy, Check, Server, Globe, Key, User, Wallet, Target } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -21,6 +21,7 @@ interface AccountDetails {
   server: string
   platform_login: string
   platform_password: string
+  profit_target: string
 }
 
 export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
@@ -81,8 +82,8 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
       localStorage.setItem('platform_login', data.platform_login)
       localStorage.setItem('server', data.server)
       localStorage.setItem('password', data.platform_password)
-      localStorage.setItem('session_id', data.session_id) // Add session_id to localStorage
-      localStorage.setItem('terminal_id', data.terminal_id) // Add terminal_id to localStorage
+      localStorage.setItem('session_id', data.session_id)
+      localStorage.setItem('terminal_id', data.terminal_id)
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -170,14 +171,14 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
           </div>
           <Badge
             variant="outline"
-            className={isActive ? "bg-green-500/10 text-green-400 border-green-500/20" : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"}
+            className={`text-lg px-4 py-2 ${isActive ? "bg-green-500/10 text-green-400 border-green-500/20" : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"}`}
           >
             {isActive ? "Active" : "Pending"}
           </Badge>
         </CardHeader>
         <CardContent className="space-y-8 pt-4">
           {/* Account Overview Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <AccountInfoCard
               icon={<Globe className="h-5 w-5 text-blue-400" />}
               label="Platform"
@@ -192,6 +193,11 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
               icon={<Wallet className="h-5 w-5 text-green-400" />}
               label="Account Size"
               value={`$${parseInt(accountDetails.account_size).toLocaleString()}`}
+            />
+            <AccountInfoCard
+              icon={<Target className="h-5 w-5 text-red-400" />}
+              label="Profit Target"
+              value={`$${parseInt(accountDetails.profit_target || "0").toLocaleString()}`}
             />
             <AccountInfoCard
               icon={<User className="h-5 w-5 text-orange-400" />}

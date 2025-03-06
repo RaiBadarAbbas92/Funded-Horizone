@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Activity, DollarSign, Percent, AlertTriangle } from "lucide-react"
+import { useRouter } from 'next/navigation'
 import { ResponsiveSankey } from '@nivo/sankey'
 
 import { Header } from "@/components/header"
@@ -71,6 +72,9 @@ interface Order {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [accountDetails, setAccountDetails] = useState<AccountDetail | null>(null)
   const [tradeHistory, setTradeHistory] = useState<FormattedTrade[]>([])
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([])
@@ -99,6 +103,56 @@ export default function DashboardPage() {
     setSessionId(localStorage.getItem('session_id') || '');
     setTerminalId(localStorage.getItem('terminal_id') || '');
   }, []);
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        router.push('/sigin');
+        return;
+      }
+      setIsAuthenticated(true);
+      setIsAuthChecking(false);
+    };
+
+    checkAuth();
+
+    // Listen for storage changes (in case token is removed)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'access_token' && !e.newValue) {
+        router.push('/sigin');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [router]);
+
+  // Don't render anything while checking auth
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          animate={{ 
+            scale: [1, 1.2, 1],
+            rotate: [0, 360]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
+
+  // Only proceed if authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const fetchData = async () => {
     try {

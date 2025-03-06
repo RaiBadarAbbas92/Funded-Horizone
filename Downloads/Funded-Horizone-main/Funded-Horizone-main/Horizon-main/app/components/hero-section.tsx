@@ -162,7 +162,7 @@ export default function Hero() {
               </Button>
               <Button 
                 className="group px-4 md:px-8 py-3 md:py-6 bg-gradient-to-r from-[#1E3A5F]/50 to-[#1E3A5F]/30 text-white rounded-lg md:rounded-xl text-base md:text-xl font-semibold border border-[#1E3A5F] w-full sm:w-auto"
-                onClick={() => window.location.href = '/trading-programs'}
+                onClick={() => window.location.href = '/#pricing'}
               >
                 View Trading Programs
                 <ArrowRight className="ml-1 md:ml-2 w-4 h-4 md:w-6 md:h-6" />

@@ -43,7 +43,7 @@ export function CommunityCallToAction() {
                 {[
                   { Icon: Facebook, label: "Facebook", link: "https://www.facebook.com/fundedhorizon" },
                   { Icon: Instagram, label: "Instagram", link: "https://www.instagram.com/fundedhorizon" },
-                  { Icon: DiscordLogoIcon, label: "Discord", link: "https://discord.gg/kRHaaR9Yen" },
+                  { Icon: DiscordLogoIcon, label: "Discord", link: "https://discord.gg/ZzG8demuuz" },
                   { Icon: Send, label: "Telegram", link: "https://t.me/fundedhorizon" }
                 ].map(({ Icon, label, link }) => (
                   <a
