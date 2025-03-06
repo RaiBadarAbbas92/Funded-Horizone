@@ -104,62 +104,81 @@ export default function DashboardPage() {
     setTerminalId(localStorage.getItem('terminal_id') || '');
   }, []);
 
-  // Check authentication status
+  // Authentication check
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        router.push('/sigin');
-        return;
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          if (isMounted.current) {
+            setIsAuthenticated(false);
+            setIsAuthChecking(false);
+            router.push('/sigin');
+          }
+          return;
+        }
+        if (isMounted.current) {
+          setIsAuthenticated(true);
+          setIsAuthChecking(false);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        if (isMounted.current) {
+          setIsAuthenticated(false);
+          setIsAuthChecking(false);
+        }
       }
-      setIsAuthenticated(true);
-      setIsAuthChecking(false);
     };
 
-    try {
-      checkAuth();
+    checkAuth();
 
-      // Listen for storage changes (in case token is removed)
-      const handleStorageChange = (e: StorageEvent) => {
-        if (e.key === 'access_token' && !e.newValue) {
-          router.push('/sigin');
-        }
-      };
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'access_token' && !e.newValue && isMounted.current) {
+        setIsAuthenticated(false);
+        router.push('/sigin');
+      }
+    };
 
-      window.addEventListener('storage', handleStorageChange);
-      return () => {
-        window.removeEventListener('storage', handleStorageChange);
-      };
-    } catch (error) {
-      console.error('Authentication check failed:', error);
-      setIsAuthChecking(false);
-      router.push('/sigin');
-    }
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [router]);
 
-  // Don't render anything while checking auth
+  // Data fetching effect
+  useEffect(() => {
+    if (sessionId && terminalId && isMounted.current) {
+      fetchData();
+    }
+  }, [sessionId, terminalId]);
+
+  const LoadingSpinner = () => (
+    <div className="min-h-screen flex items-center justify-center">
+      <motion.div
+        animate={{ 
+          scale: [1, 1.2, 1],
+          rotate: [0, 360]
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
+      />
+    </div>
+  );
+
   if (isAuthChecking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 360]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
-        />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
-  // Only proceed if authenticated
   if (!isAuthenticated) {
     return null;
+  }
+
+  if (isLoading && hasOrders !== false) {
+    return <LoadingSpinner />;
   }
 
   const fetchData = async () => {
@@ -316,37 +335,12 @@ export default function DashboardPage() {
     };
   }, [sessionId, terminalId]);
 
-  useEffect(() => {
-    if (sessionId && terminalId && isMounted.current) {
-      fetchData();
-    }
-  }, [sessionId, terminalId]);
-
   const formatBalance = (balance?: number) => {
     return balance ? `$${balance.toLocaleString()}` : '$0'
   }
 
   const calculateDrawdown = (drawdown?: number) => {
     return drawdown ? `${drawdown.toFixed(2)}%` : '0%'
-  }
-
-  if (isLoading && hasOrders !== false) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 360]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
-        />
-      </div>
-    );
   }
 
   if (error) {
