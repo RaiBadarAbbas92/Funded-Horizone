@@ -73,8 +73,6 @@ interface Order {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [accountDetails, setAccountDetails] = useState<AccountDetail | null>(null)
   const [tradeHistory, setTradeHistory] = useState<FormattedTrade[]>([])
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([])
@@ -104,54 +102,6 @@ export default function DashboardPage() {
     setTerminalId(localStorage.getItem('terminal_id') || '');
   }, []);
 
-  // Authentication check
-  useEffect(() => {
-    const checkAuth = () => {
-      try {
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-          if (isMounted.current) {
-            setIsAuthenticated(false);
-            setIsAuthChecking(false);
-            router.push('/sigin');
-          }
-          return;
-        }
-        if (isMounted.current) {
-          setIsAuthenticated(true);
-          setIsAuthChecking(false);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        if (isMounted.current) {
-          setIsAuthenticated(false);
-          setIsAuthChecking(false);
-        }
-      }
-    };
-
-    checkAuth();
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'access_token' && !e.newValue && isMounted.current) {
-        setIsAuthenticated(false);
-        router.push('/sigin');
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [router]);
-
-  // Data fetching effect
-  useEffect(() => {
-    if (sessionId && terminalId && isMounted.current) {
-      fetchData();
-    }
-  }, [sessionId, terminalId]);
-
   const LoadingSpinner = () => (
     <div className="min-h-screen flex items-center justify-center">
       <motion.div
@@ -168,18 +118,6 @@ export default function DashboardPage() {
       />
     </div>
   );
-
-  if (isAuthChecking) {
-    return <LoadingSpinner />;
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  if (isLoading && hasOrders !== false) {
-    return <LoadingSpinner />;
-  }
 
   const fetchData = async () => {
     try {
@@ -335,6 +273,14 @@ export default function DashboardPage() {
     };
   }, [sessionId, terminalId]);
 
+  if (isLoading && hasOrders !== false) {
+    return <LoadingSpinner />;
+  }
+
+  if (hasOrders === false) {
+    return <TradingChallenge isDashboard={true} />;
+  }
+
   const formatBalance = (balance?: number) => {
     return balance ? `$${balance.toLocaleString()}` : '$0'
   }
@@ -352,10 +298,6 @@ export default function DashboardPage() {
         </div>
       </div>
     );
-  }
-
-  if (hasOrders === false) {
-    return <TradingChallenge isDashboard={true} />;
   }
 
   return (
