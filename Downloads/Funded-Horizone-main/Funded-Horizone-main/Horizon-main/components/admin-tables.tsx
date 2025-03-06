@@ -182,7 +182,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       .then((response) => response.json())
       .then((data) => {
         const formattedOrders = data.map((order: any) => ({
-          id: order.id,
+          id: order.id,  // This is the FDH format ID
           type: order.type as OrderType || OrderType.STANDARD,
           user: {
             name: order.username,
@@ -200,12 +200,13 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           currentBalance: parseInt(order.account_size),
           profitTarget: 0,
           paymentMethod: order.payment_method,
-          txid: order.txid
+          txid: order.txid,
+          order_id: order.id  // Store the FDH format ID here as well
         }))
 
         // Filter out orders that are in completedOrders
         const pendingOrders = formattedOrders.filter(
-          (order: OrderDetails) => !completedOrders.some((completedOrder) => completedOrder.order_id === order.id.toString())
+          (order: OrderDetails) => !completedOrders.some((completedOrder) => completedOrder.order_id === order.id)
         )
         setOrders(pendingOrders)
       })
@@ -637,14 +638,15 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">Name</TableHead>
-                  <TableHead className="text-xs">User</TableHead>
-                  <TableHead className="text-xs">Email</TableHead>
                   <TableHead className="text-xs">Order ID</TableHead>
+                  <TableHead className="text-xs">Name</TableHead>
+                  <TableHead className="text-xs">Email</TableHead>
                   <TableHead className="text-xs">Account Type</TableHead>
                   <TableHead className="text-xs">Amount</TableHead>
-                  <TableHead className="text-xs">Status</TableHead>
+                  <TableHead className="text-xs">Platform</TableHead>
+                  <TableHead className="text-xs">Payment Method</TableHead>
                   <TableHead className="text-xs">Transaction ID</TableHead>
+                  <TableHead className="text-xs">Status</TableHead>
                   {!isMobile && <TableHead className="text-xs">Created At</TableHead>}
                   <TableHead className="text-xs">Actions</TableHead>
                 </TableRow>
@@ -652,14 +654,15 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
               <TableBody>
                 {filteredOrders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="text-xs">{order.user.name}</TableCell>
+                    <TableCell className="text-xs font-medium">{order.id}</TableCell>
                     <TableCell className="text-xs">{order.user.name}</TableCell>
                     <TableCell className="text-xs">{order.user.email}</TableCell>
-                    <TableCell className="text-xs">{order.order_id}</TableCell>
                     <TableCell className="text-xs">{order.accountType}</TableCell>
-                    <TableCell className="text-xs">{order.amount}</TableCell>
-                    <TableCell className="text-xs">{order.status}</TableCell>
+                    <TableCell className="text-xs">${order.amount}</TableCell>
+                    <TableCell className="text-xs">{order.platformType}</TableCell>
+                    <TableCell className="text-xs">{order.paymentMethod}</TableCell>
                     <TableCell className="text-xs">{order.txid}</TableCell>
+                    <TableCell className="text-xs">{order.status}</TableCell>
                     {!isMobile && <TableCell className="text-xs">{order.createdAt}</TableCell>}
                     <TableCell>
                       <div className={`flex ${isMobile ? 'flex-col' : 'flex-wrap'} gap-2`}>
