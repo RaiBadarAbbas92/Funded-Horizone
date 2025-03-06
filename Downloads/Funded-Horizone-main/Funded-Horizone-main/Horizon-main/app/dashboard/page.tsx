@@ -116,17 +116,25 @@ export default function DashboardPage() {
       setIsAuthChecking(false);
     };
 
-    checkAuth();
+    try {
+      checkAuth();
 
-    // Listen for storage changes (in case token is removed)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'access_token' && !e.newValue) {
-        router.push('/sigin');
-      }
-    };
+      // Listen for storage changes (in case token is removed)
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'access_token' && !e.newValue) {
+          router.push('/sigin');
+        }
+      };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+      window.addEventListener('storage', handleStorageChange);
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    } catch (error) {
+      console.error('Authentication check failed:', error);
+      setIsAuthChecking(false);
+      router.push('/sigin');
+    }
   }, [router]);
 
   // Don't render anything while checking auth
