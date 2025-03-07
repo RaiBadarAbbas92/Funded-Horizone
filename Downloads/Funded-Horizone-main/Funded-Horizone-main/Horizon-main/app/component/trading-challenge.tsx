@@ -122,7 +122,7 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "Daily Drawdown": "4%",
       "Max Drawdown": "10%",
       "Profit Split": "Up to 80%",
-      "Min Trading Days": "3",
+      "Min Trading Days": "5",
       "Leverage": "1:100"
     },
     prices: {
