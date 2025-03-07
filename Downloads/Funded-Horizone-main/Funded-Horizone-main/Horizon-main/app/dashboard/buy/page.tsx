@@ -22,7 +22,7 @@ const PAYMENT_METHODS = [
   {
     value: "usdt-bep20",
     label: "USDT (BEP20)",
-    image: "/USDT BAEP-20.jpg",
+    image: "/Usdt BEP-20.jpg",
     address: "0x10EE69b88803a750D0315724516bB26341F1cCd9"
   },
   {
@@ -140,6 +140,7 @@ export default function BuyPage() {
   })
   const [selectedMethod, setSelectedMethod] = useState<typeof PAYMENT_METHODS[0] | null>(null)
   const [price, setPrice] = useState<number | null>(null)
+  const [showCopied, setShowCopied] = useState(false)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -193,6 +194,12 @@ export default function BuyPage() {
         setPrice(challengeType.prices[value as keyof typeof challengeType.prices] || null)
       }
     }
+  }
+
+  const handleCopyAddress = async (address: string) => {
+    await navigator.clipboard.writeText(address)
+    setShowCopied(true)
+    setTimeout(() => setShowCopied(false), 2000)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -537,18 +544,28 @@ export default function BuyPage() {
                               </div>
                               <div className="space-y-2">
                                 <p className="text-sm text-gray-400">Send payment to:</p>
-                                <div className="flex items-center gap-2 bg-gray-800/50 p-3 rounded-lg">
+                                <div className="flex items-center gap-2 bg-gray-800/50 p-3 rounded-lg relative">
                                   <code className="text-blue-400 flex-1 break-all text-sm">
                                     {selectedMethod.address}
                                   </code>
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => navigator.clipboard.writeText(selectedMethod.address)}
+                                    onClick={() => handleCopyAddress(selectedMethod.address)}
                                     className="hover:bg-blue-500/20"
                                   >
                                     <Copy className="h-4 w-4" />
                                   </Button>
+                                  {showCopied && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0 }}
+                                      className="absolute -top-8 right-0 bg-green-500 text-white px-2 py-1 rounded text-sm"
+                                    >
+                                      Copied!
+                                    </motion.div>
+                                  )}
                                 </div>
                               </div>
                             </motion.div>
