@@ -20,6 +20,12 @@ const PAYMENT_METHODS = [
     address: "TASd3e4qaayUoARZ4NWhZy8a4uEwGs3eeX"
   },
   {
+    value: "usdt-bep20",
+    label: "USDT (BEP20)",
+    image: "/USDT BAEP-20.jpg",
+    address: "0x10EE69b88803a750D0315724516bB26341F1cCd9"
+  },
+  {
     value: "bnb-bep20",
     label: "BNB (BEP20)",
     image: "/BNB.jpg", 
