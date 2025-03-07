@@ -60,10 +60,13 @@ export function SaleOfferModal() {
           {/* Account Tiers Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {[
-              { size: '$10K', price: '$59', original: '$89', discount: '$30 OFF' },
-              { size: '$25K', price: '$127', original: '$157', discount: '$30 OFF' },
-              { size: '$50K', price: '$56', original: '$223', discount: '75% OFF' },
-              { size: '$100K', price: '$81', original: '$323', discount: '75% OFF' },
+              { size: '$1K', price: '$7', original: '$10', discount: '30% OFF' },
+              { size: '$3K', price: '$21', original: '$30', discount: '30% OFF' },
+              { size: '$5K', price: '$35', original: '$50', discount: '30% OFF' },
+              { size: '$10K', price: '$63', original: '$89', discount: '30% OFF' },
+              { size: '$25K', price: '$110', original: '$157', discount: '30% OFF' },
+              { size: '$50K', price: '$47', original: '$223', discount: '75% OFF' },
+              { size: '$100K', price: '$79', original: '$323', discount: '75% OFF' },
               { size: '$200K', price: '$245', original: '$489', discount: '50% OFF' },
               { size: '$500K', price: '$329', original: '$657', discount: '50% OFF' },
             ].map((account) => (
@@ -108,7 +111,10 @@ export function SaleOfferModal() {
           >
             <Button 
               className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2 text-xs md:text-base font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-500/20"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                window.location.href = '/signup';
+              }}
             >
               Claim Your Account Now
               <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-2" />
