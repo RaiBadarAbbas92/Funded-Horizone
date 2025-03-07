@@ -17,6 +17,7 @@ interface ChallengeRules {
   "Max Drawdown": string
   "Profit Split": string
   "Min Trading Days": string
+  "Leverage": string
 }
 
 interface ChallengeType {
@@ -44,7 +45,8 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "Daily Drawdown": "5%",
       "Max Drawdown": "10%",
       "Profit Split": "Up to 90%",
-      "Min Trading Days": "0"
+      "Min Trading Days": "0",
+      "Leverage": "1:100"
     },
     prices: {
       "$1,000": "$20",
@@ -120,7 +122,8 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "Daily Drawdown": "4%",
       "Max Drawdown": "10%",
       "Profit Split": "Up to 80%",
-      "Min Trading Days": "3"
+      "Min Trading Days": "3",
+      "Leverage": "1:100"
     },
     prices: {
       "$1,000": "$14",
@@ -197,7 +200,8 @@ const CHALLENGE_TYPES: Record<string, ChallengeType> = {
       "Daily Drawdown": "4%",
       "Max Drawdown": "10%",
       "Profit Split": "Up to 80%",
-      "Min Trading Days": "5"
+      "Min Trading Days": "5",
+      "Leverage": "1:100"
     },
     prices: {
       "$1,000": "$10",
