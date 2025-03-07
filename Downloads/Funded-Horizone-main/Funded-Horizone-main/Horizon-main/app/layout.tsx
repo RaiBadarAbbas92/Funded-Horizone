@@ -7,22 +7,11 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Funded Horizon',
-  description: 'Your trusted partner in forex trading challenges',
+  description: 'Professional Trading Prop Firm',
   icons: {
-    icon: [
-      {
-        url: '/icon.png',
-        href: '/icon.png',
-      }
-    ],
-    apple: [
-      {
-        url: '/apple-icon.png',
-        sizes: '180x180',
-        type: 'image/png',
-      }
-    ],
-    shortcut: ['/icon.png'],
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   }
 }
 
@@ -33,6 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+      </head>
       <MetaPixel />
       <body className={inter.className}>{children}</body>
     </html>
