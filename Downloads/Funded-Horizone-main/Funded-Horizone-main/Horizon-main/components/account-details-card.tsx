@@ -199,7 +199,7 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
             <AccountInfoCard
               icon={<Target className="h-5 w-5 text-red-400" />}
               label="Profit Target"
-              value={`$${parseInt(profitTarget).toLocaleString()}`}
+              value={`$${parseInt(accountDetails.profit_target).toLocaleString()}`}
             />
             <AccountInfoCard
               icon={<User className="h-5 w-5 text-orange-400" />}
