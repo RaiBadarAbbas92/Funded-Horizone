@@ -39,26 +39,26 @@ export function SaleOfferModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="w-[90vw] md:w-[60vw] max-w-[500px] bg-navy-950 rounded-2xl p-2 md:p-4 shadow-2xl border border-navy-800/50 backdrop-blur-xl">
+      <DialogContent className="w-[85vw] md:w-[50vw] max-w-[400px] bg-navy-950 rounded-2xl p-1.5 md:p-3 shadow-2xl border border-navy-800/50 backdrop-blur-xl">
         <DialogHeader className="relative">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-3 py-0.5 rounded-full font-bold text-xs shadow-lg"
+            className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-2 py-0.5 rounded-full font-bold text-[10px] shadow-lg"
           >
             Limited Time Offer
           </motion.div>
-          <DialogTitle className="text-xl md:text-3xl font-bold text-center bg-gradient-to-r from-white via-orange-200 to-white bg-clip-text text-transparent mb-2 tracking-tight pt-2">
+          <DialogTitle className="text-lg md:text-2xl font-bold text-center bg-gradient-to-r from-white via-orange-200 to-white bg-clip-text text-transparent mb-1.5 tracking-tight pt-2">
             Trading Accounts
           </DialogTitle>
-          <p className="text-orange-400 text-center text-xs md:text-sm font-medium">
+          <p className="text-orange-400 text-center text-[10px] md:text-xs font-medium">
             Special Discount on All Account Tiers
           </p>
         </DialogHeader>
 
-        <div className="mt-4 space-y-3">
+        <div className="mt-3 space-y-2">
           {/* Account Tiers Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
             {[
               { size: '$1K', price: '$7', original: '$10', discount: '30% OFF' },
               { size: '$3K', price: '$21', original: '$30', discount: '30% OFF' },
@@ -73,16 +73,16 @@ export function SaleOfferModal() {
               <motion.div
                 key={account.size}
                 whileHover={{ scale: 1.02 }}
-                className="bg-navy-900 p-2 rounded-lg border border-navy-700/50 backdrop-blur-sm"
+                className="bg-navy-900 p-1.5 rounded-lg border border-navy-700/50 backdrop-blur-sm"
               >
                 <div className="flex flex-col">
-                  <span className="text-sm md:text-base font-bold text-white">{account.size}</span>
-                  <p className="text-orange-400/80 text-[10px] md:text-xs">Trading Account</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-green-400 text-[10px] md:text-xs font-bold">{account.discount}</p>
+                  <span className="text-xs md:text-sm font-bold text-white">{account.size}</span>
+                  <p className="text-orange-400/80 text-[8px] md:text-[10px]">Trading Account</p>
+                  <div className="flex items-center justify-between mt-0.5">
+                    <p className="text-green-400 text-[8px] md:text-[10px] font-bold">{account.discount}</p>
                     <div className="text-right">
-                      <span className="text-[10px] md:text-xs text-gray-400 line-through block">{account.original}</span>
-                      <span className="text-sm font-bold text-orange-500">{account.price}</span>
+                      <span className="text-[8px] md:text-[10px] text-gray-400 line-through block">{account.original}</span>
+                      <span className="text-xs font-bold text-orange-500">{account.price}</span>
                     </div>
                   </div>
                 </div>
@@ -91,15 +91,15 @@ export function SaleOfferModal() {
           </div>
 
           {/* Timer */}
-          <div className="flex justify-center gap-1.5 md:gap-3 mt-4">
+          <div className="flex justify-center gap-1 md:gap-2 mt-3">
             {Object.entries(timeLeft).map(([label, value]) => (
               <div key={label} className="text-center">
-                <div className="w-8 h-8 md:w-12 md:h-12 bg-navy-900 rounded-lg flex items-center justify-center border border-navy-700/50 shadow-lg">
-                  <span className="text-sm md:text-lg font-bold text-white">
+                <div className="w-6 h-6 md:w-10 md:h-10 bg-navy-900 rounded-lg flex items-center justify-center border border-navy-700/50 shadow-lg">
+                  <span className="text-xs md:text-base font-bold text-white">
                     {String(value).padStart(2, '0')}
                   </span>
                 </div>
-                <span className="text-[10px] md:text-xs text-orange-400/80 mt-0.5 block capitalize">{label}</span>
+                <span className="text-[8px] md:text-[10px] text-orange-400/80 mt-0.5 block capitalize">{label}</span>
               </div>
             ))}
           </div>
@@ -107,23 +107,23 @@ export function SaleOfferModal() {
           {/* CTA Button */}
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="mt-4"
+            className="mt-3"
           >
             <Button 
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2 text-xs md:text-base font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-500/20"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-1.5 text-[10px] md:text-sm font-bold rounded-lg transition-all duration-300 shadow-lg shadow-orange-500/20"
               onClick={() => {
                 setIsOpen(false);
                 window.location.href = '/signup';
               }}
             >
               Claim Your Account Now
-              <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-2" />
+              <ArrowRight className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 ml-1.5" />
             </Button>
           </motion.div>
         </div>
 
-        <DialogClose className="absolute top-2 right-2 text-gray-400 hover:text-orange-400 transition-colors duration-200">
-          <X className="w-3 h-3 md:w-4 md:h-4" />
+        <DialogClose className="absolute top-1.5 right-1.5 text-gray-400 hover:text-orange-400 transition-colors duration-200">
+          <X className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
         </DialogClose>
       </DialogContent>
     </Dialog>
