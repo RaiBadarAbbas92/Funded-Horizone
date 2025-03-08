@@ -60,16 +60,61 @@ export function SaleOfferModal() {
           {/* Account Tiers Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
             {[
-              { size: '$1K', price: '$7', original: '$10', discount: '30% OFF' },
-              { size: '$3K', price: '$21', original: '$30', discount: '30% OFF' },
-              { size: '$5K', price: '$35', original: '$50', discount: '30% OFF' },
-              { size: '$10K', price: '$63', original: '$89', discount: '30% OFF' },
-              { size: '$25K', price: '$110', original: '$157', discount: '30% OFF' },
-              { size: '$50K', price: '$47', original: '$223', discount: '75% OFF' },
-              { size: '$100K', price: '$79', original: '$323', discount: '75% OFF' },
-              { size: '$200K', price: '$245', original: '$489', discount: '50% OFF' },
-              { size: '$500K', price: '$329', original: '$657', discount: '50% OFF' },
-            ].map((account) => (
+  { 
+    size: '$1K',
+    price: '$7',
+    original: '$10',  // 30% off $10 = $7
+    discount: '30% OFF'
+  },
+  { 
+    size: '$3K',
+    price: '$14',
+    original: '$20',  // 30% off $20 = $14
+    discount: '30% OFF'
+  },
+  { 
+    size: '$5K',
+    price: '$19',
+    original: '$27',  // 30% off $27 = $18.90 → $19 (rounded)
+    discount: '30% OFF'
+  },
+  { 
+    size: '$10K',
+    price: '$31',
+    original: '$44',  // 30% off $44 = $30.80 → $31
+    discount: '30% OFF'
+  },
+  { 
+    size: '$25K',
+    price: '$54',
+    original: '$77',  // 30% off $77 = $53.90 → $54
+    discount: '30% OFF'
+  },
+  { 
+    size: '$50K',
+    price: '$47',
+    original: '$188',  // 75% off $188 = $47
+    discount: '75% OFF'
+  },
+  { 
+    size: '$100K',
+    price: '$79',
+    original: '$316',  // 75% off $316 = $79
+    discount: '75% OFF'
+  },
+  { 
+    size: '$200K',
+    price: '$274',
+    original: '$548',  // 50% off $548 = $274
+    discount: '50% OFF'
+  },
+  { 
+    size: '$500K',
+    price: '$499',
+    original: '$998',  // 50% off $998 = $499
+    discount: '50% OFF'
+  }
+].map((account) => (
               <motion.div
                 key={account.size}
                 whileHover={{ scale: 1.02 }}
