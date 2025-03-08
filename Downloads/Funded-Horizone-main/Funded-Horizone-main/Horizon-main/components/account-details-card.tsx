@@ -31,6 +31,7 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
   const [error, setError] = useState<string | null>(null)
   const [currentOrderId, setCurrentOrderId] = useState(orderId)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [profitTarget, setProfitTarget] = useState<string>('0')
 
   // Listen to localStorage changes
   useEffect(() => {
@@ -84,6 +85,7 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
       localStorage.setItem('password', data.platform_password)
       localStorage.setItem('session_id', data.session_id)
       localStorage.setItem('terminal_id', data.terminal_id)
+      localStorage.setItem('profit_target', data.profit_target)
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -197,7 +199,7 @@ export function AccountDetailsCard({ orderId }: AccountDetailsCardProps) {
             <AccountInfoCard
               icon={<Target className="h-5 w-5 text-red-400" />}
               label="Profit Target"
-              value={`$${parseInt(accountDetails.profit_target || "0").toLocaleString()}`}
+              value={`$${parseInt(profitTarget).toLocaleString()}`}
             />
             <AccountInfoCard
               icon={<User className="h-5 w-5 text-orange-400" />}
