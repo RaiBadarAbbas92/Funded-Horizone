@@ -548,14 +548,15 @@ export default function BuyPage() {
                                   <code className="text-blue-400 flex-1 break-all text-sm">
                                     {selectedMethod.address}
                                   </code>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleCopyAddress(selectedMethod.address)}
-                                    className="hover:bg-blue-500/20"
-                                  >
-                                    <Copy className="h-4 w-4" />
-                                  </Button>
+                                 <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  type="button" // 👈 This is the crucial fix
+                                  onClick={() => handleCopyAddress(selectedMethod.address)}
+                                  className="hover:bg-blue-500/20"
+                                                                >
+                              <Copy className="h-4 w-4" />
+                                        </Button>
                                   {showCopied && (
                                     <motion.div
                                       initial={{ opacity: 0, y: 10 }}
