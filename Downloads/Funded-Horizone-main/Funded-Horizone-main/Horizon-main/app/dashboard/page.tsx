@@ -1,19 +1,17 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Activity, DollarSign, Percent, AlertTriangle } from "lucide-react"
+import { motion } from "framer-motion"
 import { useRouter } from 'next/navigation'
-import { ResponsiveSankey } from '@nivo/sankey'
 
 import { Header } from "@/components/header"
-import { OverviewCard } from "@/components/overview-card"
 import { AccountDetailsCard } from "@/components/account-details-card"
-import { Card } from "@/components/ui/card"
-import { 
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
-} from "@/components/ui/table"
-import TradingChallenge from '../component/trading-challenge'
+// import { OverviewCard } from "@/components/overview-card"
+// import { Card } from "@/components/ui/card"
+// import { 
+//   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
+// } from "@/components/ui/table"
+// import TradingChallenge from '../component/trading-challenge'
 
 interface TradeDetail {
   openTime: string
@@ -66,9 +64,9 @@ interface Order {
     type: string;
     value: string;
   };
-  openPrice: number;
-  closePrice: number;
-  profit: number;
+  openPrice: number
+  closePrice: number
+  profit: number
 }
 
 export default function DashboardPage() {
@@ -102,22 +100,22 @@ export default function DashboardPage() {
     setTerminalId(localStorage.getItem('terminal_id') || '');
   }, []);
 
-  const LoadingSpinner = () => (
-    <div className="min-h-screen flex items-center justify-center">
-      <motion.div
-        animate={{ 
-          scale: [1, 1.2, 1],
-          rotate: [0, 360]
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
-      />
-    </div>
-  );
+  // const LoadingSpinner = () => (
+  //   <div className="min-h-screen flex items-center justify-center">
+  //     <motion.div
+  //       animate={{ 
+  //         scale: [1, 1.2, 1],
+  //         rotate: [0, 360]
+  //       }}
+  //       transition={{
+  //         duration: 2,
+  //         repeat: Infinity,
+  //         ease: "easeInOut"
+  //       }}
+  //       className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
+  //     />
+  //   </div>
+  // );
 
   const fetchData = async () => {
     try {
@@ -273,21 +271,21 @@ export default function DashboardPage() {
     };
   }, [sessionId, terminalId]);
 
-  if (isLoading && hasOrders !== false) {
-    return <LoadingSpinner />;
-  }
+  // if (isLoading && hasOrders !== false) {
+  //   return <LoadingSpinner />;
+  // }
 
-  if (hasOrders === false) {
-    return <TradingChallenge isDashboard={true} />;
-  }
+  // if (hasOrders === false) {
+  //   return <TradingChallenge isDashboard={true} />;
+  // }
 
-  const formatBalance = (balance?: number) => {
-    return balance ? `$${balance.toLocaleString()}` : '$0'
-  }
+  // const formatBalance = (balance?: number) => {
+  //   return balance ? `$${balance.toLocaleString()}` : '$0'
+  // }
 
-  const calculateDrawdown = (drawdown?: number) => {
-    return drawdown ? `${drawdown.toFixed(2)}%` : '0%'
-  }
+  // const calculateDrawdown = (drawdown?: number) => {
+  //   return drawdown ? `${drawdown.toFixed(2)}%` : '0%'
+  // }
 
   if (error) {
     return (
@@ -304,98 +302,47 @@ export default function DashboardPage() {
     <main className="container mx-auto py-8 px-4">
       <Header />
       <div>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="grid grid-cols-1 lg:grid-cols-4 gap-4"
-        >
-          <OverviewCard
-            title="Profit"
-            value={formatBalance(accountDetails?.profit)}
-            change=""
-            icon={<Percent className="h-5 w-5 text-green-400" />}
-          />
-          <OverviewCard
-            title="Account Balance"
-            value={formatBalance(accountDetails?.balance)}
-            change=""
-            icon={<DollarSign className="h-5 w-5 text-blue-400" />}
-          />
-          <OverviewCard
-            title="Total Trades" 
-            value={accountDetails?.totalTrades?.toString() || "0"}
-            change=""
-            icon={<Activity className="h-5 w-5 text-purple-400" />}
-          />
-          <OverviewCard
-            title="Daily Drawdown"
-            value={calculateDrawdown(drawdownData.currentDrawdown)}
-            change=""
-            icon={<AlertTriangle className="h-5 w-5 text-red-400" />}
-          />
-        </motion.div>
-
         <AccountDetailsCard
           orderId={localStorage.getItem('selectedAccountId') || ""}
         />
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-        >
-          <Card className="p-6 bg-[#0d2339]/80 border-gray-800/50 backdrop-blur-sm">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-6">
-              Recent Trades
-            </h2>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-gray-400">Symbol</TableHead>
-                    <TableHead className="text-gray-400">Type</TableHead>
-                    <TableHead className="text-gray-400">Volume</TableHead>
-                    <TableHead className="text-gray-400">Entry Price</TableHead>
-                    <TableHead className="text-gray-400">P/L</TableHead>
-                    <TableHead className="text-gray-400">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {tradeHistory.slice(0, 5).map((trade, index) => (
-                    <TableRow key={trade.id} className="hover:bg-white/5">
-                      <TableCell className="font-medium">{trade.symbol}</TableCell>
-                      <TableCell className={trade.type === 'Buy' ? 'text-green-400' : 'text-red-400'}>
-                        {trade.type}
-                      </TableCell>
-                      <TableCell>{trade.volume}</TableCell>
-                      <TableCell>{trade.openPrice}</TableCell>
-                      <TableCell className={trade.profit >= 0 ? 'text-green-400' : 'text-red-400'}>
-                        ${trade.profit.toLocaleString()}
-                      </TableCell>
-                      <TableCell>{trade.date}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </Card>
-        </motion.div>
       </div>
     </main>
   )
 }
 
-function StatItem({ label, value, icon }: { label: string, value: string, icon: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-white/5">
-          {icon}
-        </div>
-        <span className="text-gray-400">{label}</span>
-      </div>
-      <span className="font-semibold text-white">{value}</span>
-    </div>
-  )
-}
+// function StatItem({ label, value, icon }: { label: string, value: string, icon: React.ReactNode }) {
+//   return (
+//     <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+//       <div className="flex items-center gap-3">
+//         <div className="p-2 rounded-lg bg-white/5">
+//           {icon}
+//         </div>
+//         <span className="text-gray-400">{label}</span>
+//       </div>
+//       <span className="font-semibold text-white">{value}</span>
+//     </div>
+//   )
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
