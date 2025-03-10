@@ -32,6 +32,11 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
     setOpen(false)
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditedOrder({ ...editedOrder, [name]: value });
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -100,8 +105,9 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
                   <div>
                     <Label className="text-gray-300 text-xs">Profit Target</Label>
                     <Input 
+                      name="profitTarget"
                       value={editedOrder?.profitTarget?.toString() || ''} 
-                      onChange={(e) => setEditedOrder(prev => ({ ...prev, profitTarget: parseFloat(e.target.value) }))}
+                      onChange={handleChange}
                       className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                     />
                   </div>
@@ -118,16 +124,18 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
                   <div>
                     <Label className="text-gray-300 text-xs">Login</Label>
                     <Input 
+                      name="platformLogin"
                       value={editedOrder?.platformLogin || ''} 
-                      onChange={(e) => setEditedOrder(prev => ({ ...prev, platformLogin: e.target.value }))}
+                      onChange={handleChange}
                       className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                     />
                   </div>
                   <div>
                     <Label className="text-gray-300 text-xs">Password</Label>
                     <Input 
+                      name="platformPassword"
                       value={editedOrder?.platformPassword || ''} 
-                      onChange={(e) => setEditedOrder(prev => ({ ...prev, platformPassword: e.target.value }))}
+                      onChange={handleChange}
                       type="password" 
                       className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                     />
@@ -135,24 +143,27 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
                   <div>
                     <Label className="text-gray-300 text-xs">Server</Label>
                     <Input 
+                      name="server"
                       value={editedOrder?.server || ''} 
-                      onChange={(e) => setEditedOrder(prev => ({ ...prev, server: e.target.value }))}
+                      onChange={handleChange}
                       className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                     />
                   </div>
                   <div>
                     <Label className="text-gray-300 text-xs">Session ID</Label>
                     <Input 
+                      name="sessionId"
                       value={editedOrder?.sessionId || ''} 
-                      onChange={(e) => setEditedOrder(prev => ({ ...prev, sessionId: e.target.value }))}
+                      onChange={handleChange}
                       className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                     />
                   </div>
                   <div>
                     <Label className="text-gray-300 text-xs">Terminal ID</Label>
                     <Input 
+                      name="terminalId"
                       value={editedOrder?.terminalId || ''} 
-                      onChange={(e) => setEditedOrder(prev => ({ ...prev, terminalId: e.target.value }))}
+                      onChange={handleChange}
                       className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                     />
                   </div>
@@ -299,4 +310,4 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
       </DialogContent>
     </Dialog>
   )
-} 
+}
