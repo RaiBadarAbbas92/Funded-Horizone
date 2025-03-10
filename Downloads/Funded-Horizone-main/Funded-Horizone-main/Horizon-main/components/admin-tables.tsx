@@ -376,6 +376,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       formData.append('platform_password', order.platformPassword || '')
       formData.append('session_id', order.sessionId || '')
       formData.append('terminal_id', order.terminalId || '')
+      formData.append('profit_target', order.profitTarget?.toString() || '0') // Include profit target
 
       // Extract numeric part from order ID
       const orderId = order.id.toString().replace(/[^\d]/g, '')
