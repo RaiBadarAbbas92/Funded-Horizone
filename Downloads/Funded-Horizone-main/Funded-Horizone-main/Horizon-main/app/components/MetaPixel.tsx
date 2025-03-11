@@ -25,7 +25,7 @@ const MetaPixel = () => {
       script.src = "https://connect.facebook.net/en_US/fbevents.js";
       document.head.appendChild(script);
 
-      window.fbq("init", "1185730099569043");
+      window.fbq("init", "540894251816091");
       window.fbq("track", "PageView");
     }
   }, []);
@@ -50,7 +50,7 @@ const MetaPixel = () => {
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1185730099569043');
+            fbq('init', '540894251816091');
             fbq('track', 'PageView');
           `,
         }}
@@ -61,7 +61,7 @@ const MetaPixel = () => {
           height="1"
           width="1"
           style={{ display: "none" }}
-          src="https://www.facebook.com/tr?id=1185730099569043&ev=PageView&noscript=1"
+          src="https://www.facebook.com/tr?id=540894251816091&ev=PageView&noscript=1"
         />
       </noscript>
     </>
