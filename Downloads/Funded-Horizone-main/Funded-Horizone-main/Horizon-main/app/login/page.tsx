@@ -35,11 +35,13 @@ export default function LoginPage() {
 
       if (isValidUser) {
         // Set the admin token in cookies and localStorage
-        const token = "your-secure-token"
+        const token = "abut"
         document.cookie = `admin-token=${token}; path=/`
         localStorage.setItem('admin-token', token)
-        router.push("/adminportal")
+        router.push("/adminportal") // Redirect to admin portal
       } else {
+        // Set the token for no access
+        localStorage.setItem('admin-token', "not")
         setError("Invalid credentials")
       }
     } catch (error) {
