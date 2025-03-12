@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/router"
 import { motion } from "framer-motion"
 import { AdminOverview } from "@/components/admin-overview"
 import { AdminTables } from "@/components/admin-tables"
@@ -9,6 +10,21 @@ export default function AdminDashboard() {
   const [selectedSection, setSelectedSection] = useState<
     "users" | "orders" | "completedOrders" | "failedOrders" | null
   >(null)
+  const router = useRouter()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem("admin-token")
+    if (token === "abut") {
+      setIsAuthenticated(true)
+    } else {
+      router.push("/login")
+    }
+  }, [router])
+
+  if (!isAuthenticated) {
+    return null // or a loading spinner
+  }
 
   return (
     <div className="min-h-screen bg-[#0a1929]">
@@ -16,7 +32,6 @@ export default function AdminDashboard() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-orange-500/5 blur-3xl" />
       </div>
-
 
       <div className="container py-6 px-4 md:px-6 relative z-10">
         <motion.h1
