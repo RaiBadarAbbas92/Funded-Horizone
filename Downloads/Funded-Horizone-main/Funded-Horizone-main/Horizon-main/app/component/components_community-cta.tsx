@@ -41,7 +41,7 @@ export function CommunityCallToAction() {
             <div className="flex-1 w-full lg:w-auto">
               <div className="grid grid-cols-2 gap-3 sm:gap-6">
                 {[
-                  { Icon: Facebook, label: "Facebook", link: "https://www.facebook.com/fundedhorizon" },
+                  { Icon: Facebook, label: "Facebook", link: "https://www.facebook.com/fundedhorizon1/" },
                   { Icon: Instagram, label: "Instagram", link: "https://www.instagram.com/fundedhorizon" },
                   { Icon: DiscordLogoIcon, label: "Discord", link: "https://discord.gg/ZzG8demuuz" },
                   { Icon: Send, label: "Telegram", link: "https://t.me/fundedhorizon" }
