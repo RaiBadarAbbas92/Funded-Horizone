@@ -27,7 +27,7 @@ export function Footer() {
               <p className="text-gray-300 leading-relaxed text-lg">
               Risk Disclosure: Trading financial markets carries substantial risk of loss. Content is educational only and not financial advice. Funded Horizon does not execute trades or manage funds. Services are provided through third parties. Past performance does not guarantee future results. Trade only with risk capital. Use of platform acknowledges acceptance of these risks.</p>
               <div className="flex space-x-6">
-                <a href="https://www.facebook.com/fundedhorizon" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.facebook.com/fundedhorizon1/" target="_blank" rel="noopener noreferrer">
                   <Facebook className="w-7 h-7 text-gray-400 hover:text-orange-400 cursor-pointer transition-all duration-300 hover:scale-110" />
                 </a>
                 <a href="https://t.me/fundedhorizon" target="_blank" rel="noopener noreferrer">
@@ -36,7 +36,7 @@ export function Footer() {
                 <a href="https://www.instagram.com/fundedhorizon" target="_blank" rel="noopener noreferrer">
                   <Instagram className="w-7 h-7 text-gray-400 hover:text-orange-400 cursor-pointer transition-all duration-300 hover:scale-110" />
                 </a>
-                <a href="https://discord.gg/kRHaaR9Yen" target="_blank" rel="noopener noreferrer">
+                <a href="https://discord.gg/ZzG8demuuz" target="_blank" rel="noopener noreferrer">
                   <DiscordLogoIcon className="w-7 h-7 text-gray-400 hover:text-[#5865F2] cursor-pointer transition-all duration-300 hover:scale-110" />
                 </a>
               </div>
