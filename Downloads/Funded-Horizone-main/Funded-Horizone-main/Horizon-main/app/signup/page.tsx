@@ -127,7 +127,7 @@ const FloatingIcons = () => {
 export default function Signup() {
   const router = useRouter();
   const countryList = Object.entries(countries).map(([code, country]) => ({
-    value: code,
+    value: country.name,
     label: country.name,
   }));
 
@@ -157,6 +157,10 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
     
+    // Get the full country name from the selected country code
+    const selectedCountry = Object.entries(countries).find(([code]) => code === formData.country);
+    const countryName = selectedCountry ? selectedCountry[1].name : formData.country;
+    
     // Prepare data according to backend requirements
     const signupData = {
       username: formData.username,
@@ -164,7 +168,7 @@ export default function Signup() {
       password: formData.password,
       name: formData.name,
       phone_no: formData.contact,
-      country: formData.country,
+      country: formData.countryName, // Send full country name instead of code
       address: formData.address
     };
 
