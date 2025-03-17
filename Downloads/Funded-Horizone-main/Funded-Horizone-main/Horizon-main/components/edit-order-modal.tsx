@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { CreditCard, Shield, LineChart, ChevronDown } from "lucide-react"
+import { CreditCard, Shield, LineChart } from "lucide-react"
 import { OrderDetails, OrderStatus, OrderType, RejectReasons, FailReasons } from "@/types/order"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,7 +24,6 @@ interface EditOrderModalProps {
 
 export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderModalProps) {
   const [editedOrder, setEditedOrder] = useState<OrderDetails>(order)
-  const [showFailReasons, setShowFailReasons] = useState(false)
   const [open, setOpen] = useState(false)
 
   const handleSaveChanges = async () => {
@@ -234,10 +233,11 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-300 text-xs">Phone Number</Label>
+                  <Label className="text-gray-300 text-xs">Password</Label>
                   <Input 
-                    value={editedOrder?.user.phone || ''} 
+                    value={editedOrder?.user.password || ''} 
                     readOnly 
+                    type="password"
                     className="mt-0.5 bg-gray-700 border-orange-700 text-white rounded-md text-xs h-8" 
                   />
                 </div>
@@ -274,30 +274,7 @@ export function EditOrderModal({ order, onSave, onFail, onReject }: EditOrderMod
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between gap-3">
-            <div className="relative">
-              <Button 
-                variant="outline" 
-                onClick={() => setShowFailReasons(!showFailReasons)}
-                className="w-full md:w-auto flex items-center justify-between border border-orange-700 text-orange-500 text-xs rounded-lg py-1.5 px-3 shadow-lg hover:bg-orange-950/30"
-              >
-                Mark as Failed <ChevronDown className={`ml-1.5 w-3 h-3 transform transition-transform ${showFailReasons ? 'rotate-180' : ''}`} />
-              </Button>
-              {showFailReasons && (
-                <div className="absolute top-full left-0 mt-1.5 w-full z-50">
-                  {Object.values(FailReasons).map(reason => (
-                    <Button 
-                      key={reason} 
-                      variant="outline" 
-                      onClick={() => onFail(editedOrder, reason)}
-                      className="w-full border border-orange-700 text-orange-500 text-xs rounded-lg py-1.5 shadow-lg hover:bg-orange-950/30 mb-1.5"
-                    >
-                      {reason}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
+          <div className="flex flex-col md:flex-row justify-end gap-3">
             <Button 
               type="submit" 
               onClick={handleSaveChanges}
