@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Search, XCircle, CreditCard, Hash, Shield, LineChart, ChevronDown, User, Wallet } from "lucide-react" 
+import { Search, XCircle, CreditCard, Hash, Shield, LineChart, ChevronDown, User, Wallet, AlertTriangle } from "lucide-react" 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,8 +19,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { EditOrderModal } from "@/components/edit-order-modal"
 import { OrderDetails, OrderStatus, OrderType, RejectReasons, FailReasons } from "@/types/order"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 interface RunningOrder {
+  id: string
   order_id: string
   platform_login: string
   platform_password: string
@@ -106,6 +108,8 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
   const [viewOrder, setViewOrder] = useState<OrderDetails | null>(null); // State for viewing order details
   const [viewUser, setViewUser] = useState<User | null>(null); // State for viewing user details
   const [isClient, setIsClient] = useState(false)
+  const [selectedFailureReason, setSelectedFailureReason] = useState<FailReasons | null>(null)
+  const [failureModalOrder, setFailureModalOrder] = useState<string | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -157,6 +161,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           user: {
             name: order.username,
             email: "",
+            password: order.password,
           },
           amount: order.account_size,
           status: OrderStatus.COMPLETED,
@@ -187,6 +192,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           user: {
             name: order.username,
             email: order.email,
+            password:order.password,
           },
           amount: order.account_size,
           status: OrderStatus.PENDING,
@@ -302,16 +308,29 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
   };
 
   const handleFailRunningOrder = async (orderId: string) => {
+    if (!selectedFailureReason) {
+      alert('Please select a failure reason');
+      return;
+    }
+
     try {
-      const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/fail_running_order/${orderId}`, {
-        method: 'POST'
+      // Extract only the numeric part from the order ID by removing 'FDH'
+      const numericOrderId = orderId.replace('FDH', '');
+
+      const formData = new FormData();
+      formData.append('reason', selectedFailureReason);
+      const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/fail_order/${numericOrderId}`, {
+        method: 'POST',
+        body: formData
       });
 
       if (response.ok) {
-        alert(`Order ${orderId} failed`);
+        alert(`Order ${orderId} failed due to: ${selectedFailureReason}`);
         // Refresh running orders
         const updatedRunningOrders = runningOrders.filter(order => order.order_id !== orderId);
         setRunningOrders(updatedRunningOrders);
+        setFailureModalOrder(null);
+        setSelectedFailureReason(null);
       } else {
         throw new Error('Failed to fail order');
       }
@@ -466,6 +485,128 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
       user.email.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
+  const renderRunningOrdersTable = () => (
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-xs">Order ID</TableHead>
+            <TableHead className="text-xs">Platform Login</TableHead>
+            <TableHead className="text-xs">Platform Password</TableHead>
+            <TableHead className="text-xs">Server</TableHead>
+            <TableHead className="text-xs">Session ID</TableHead>
+            <TableHead className="text-xs">Terminal ID</TableHead>
+            <TableHead className="text-xs">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {runningOrders.map((order) => (
+            <TableRow key={order.order_id}>
+              <TableCell className="text-xs">{order.order_id}</TableCell>
+              <TableCell className="text-xs">{order.platform_login}</TableCell>
+              <TableCell className="text-xs">{order.platform_password}</TableCell>
+              <TableCell className="text-xs">{order.server}</TableCell>
+              <TableCell className="text-xs">{order.session_id}</TableCell>
+              <TableCell className="text-xs">{order.terminal_id}</TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePassOrder(order.order_id)}
+                    className="bg-green-500 text-white hover:bg-green-600 rounded-lg text-xs"
+                  >
+                    Pass
+                  </Button>
+                  <Dialog 
+                    open={failureModalOrder === order.order_id} 
+                    onOpenChange={(open) => {
+                      if (!open) {
+                        setFailureModalOrder(null);
+                        setSelectedFailureReason(null);
+                      }
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setFailureModalOrder(order.order_id)}
+                        className="bg-red-500 text-white hover:bg-red-600 rounded-lg text-xs"
+                      >
+                        Fail
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-xl bg-gray-900 border border-red-800/50 shadow-2xl rounded-xl">
+                      <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+                          <div className="p-1.5 bg-red-900/50 rounded-lg">
+                            <AlertTriangle className="w-5 h-5 text-red-300" />
+                          </div>
+                          Fail Order
+                        </DialogTitle>
+                        <DialogDescription className="text-gray-400 text-sm mt-2">
+                          Please select a reason for failing this order.
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="mt-6 space-y-4">
+                        <RadioGroup
+                          value={selectedFailureReason || ""}
+                          onValueChange={(value) => setSelectedFailureReason(value as FailReasons)}
+                          className="space-y-3"
+                        >
+                          {Object.values(FailReasons).map((reason) => (
+                            <div
+                              key={reason}
+                              className="flex items-center space-x-3 bg-black/20 p-4 rounded-lg border border-red-500/20 hover:border-red-500/40 transition-colors hover:bg-black/30"
+                            >
+                              <RadioGroupItem value={reason} id={reason} className="text-red-500 border-red-500/50" />
+                              <Label 
+                                htmlFor={reason} 
+                                className="text-sm text-gray-200 cursor-pointer font-medium hover:text-white transition-colors"
+                              >
+                                {reason}
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </div>
+
+                      <DialogFooter className="mt-6 space-x-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setFailureModalOrder(null);
+                            setSelectedFailureReason(null);
+                          }}
+                          className="bg-transparent text-white border-red-500/20 hover:bg-red-500/10"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => handleFailRunningOrder(order.order_id)}
+                          disabled={!selectedFailureReason}
+                          className={`${
+                            selectedFailureReason 
+                              ? 'bg-red-500 hover:bg-red-600' 
+                              : 'bg-red-500/50 cursor-not-allowed'
+                          } text-white transition-colors duration-200`}
+                        >
+                          Confirm Failure
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+
   const renderTable = () => {
     if (!isClient) {
       return null
@@ -597,55 +738,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           </div>
         )
       case "runningOrders":
-        return (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-xs">Order ID</TableHead>
-                  <TableHead className="text-xs">Platform Login</TableHead>
-                  <TableHead className="text-xs">Platform Password</TableHead>
-                  <TableHead className="text-xs">Server</TableHead>
-                  <TableHead className="text-xs">Session ID</TableHead>
-                  <TableHead className="text-xs">Terminal ID</TableHead>
-                  <TableHead className="text-xs">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {runningOrders.map((order) => (
-                  <TableRow key={order.order_id}>
-                    <TableCell className="text-xs">{order.order_id}</TableCell>
-                    <TableCell className="text-xs">{order.platform_login}</TableCell>
-                    <TableCell className="text-xs">{order.platform_password}</TableCell>
-                    <TableCell className="text-xs">{order.server}</TableCell>
-                    <TableCell className="text-xs">{order.session_id}</TableCell>
-                    <TableCell className="text-xs">{order.terminal_id}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handlePassOrder(order.order_id)}
-                          className="bg-green-500 text-white hover:bg-green-600 rounded-lg text-xs"
-                        >
-                          Pass
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleFailRunningOrder(order.order_id)}
-                          className="bg-red-500 text-white hover:bg-red-600 rounded-lg text-xs"
-                        >
-                          Fail
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )
+        return renderRunningOrdersTable();
       case "orders":
       case "completedOrders":
       case "failedOrders":
