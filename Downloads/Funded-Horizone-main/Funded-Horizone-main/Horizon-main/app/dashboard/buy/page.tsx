@@ -32,18 +32,19 @@ import { useRouter } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 
 const PAYMENT_METHODS = [
+   {
+    value: "usdt-bep20",
+    label: "USDT (BEP20)",
+    image: "/Usdt BEP-20.jpg",
+    address: "0x10EE69b88803a750D0315724516bB26341F1cCd9",
+  },
   {
     value: "usdt-trc20",
     label: "USDT (TRC20)",
     image: "/USDT TRC-20.jpg",
     address: "TASd3e4qaayUoARZ4NWhZy8a4uEwGs3eeX",
   },
-  {
-    value: "usdt-bep20",
-    label: "USDT (BEP20)",
-    image: "/Usdt BEP-20.jpg",
-    address: "0x10EE69b88803a750D0315724516bB26341F1cCd9",
-  },
+ 
   {
     value: "bnb-bep20",
     label: "BNB (BEP20)",
