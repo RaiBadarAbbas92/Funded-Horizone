@@ -175,6 +175,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
           terminalId: order.terminal_id,
           startingBalance: parseInt(order.account_size),
           currentBalance: parseInt(order.account_size),
+          profitTarget: order.profit_target,
           paymentMethod: order.payment_method,
           txid: order.txid
         }))
@@ -342,6 +343,7 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
 
   const handleSaveChanges = async (order: OrderDetails) => {
     try {
+
       if (selectedSection === "completedOrders") {
         // Handle editing completed order
         const formData = new FormData();
@@ -350,8 +352,9 @@ export function AdminTables({ selectedSection }: AdminTablesProps) {
         formData.append('platform_password', order.platformPassword || '');
         formData.append('session_id', order.sessionId || '');
         formData.append('terminal_id', order.terminalId || '');
+        formData.append('profit_target', order.profitTarget?.toString() || '0');
 
-        const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/edit_complete_order/${order.id}`, {
+        const response = await fetch(`https://fundedhorizon-back-65a0759eedf9.herokuapp.com/order/edit_complete_order/${order.order_id?.replace('FDH', '')}`, {
           method: 'PUT',
           body: formData
         });
