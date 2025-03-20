@@ -162,10 +162,10 @@ export default function BuyPage() {
     challenge_type: "",
     account_size: "",
     platform: "",
-    payment_method: "",
+    payment_method: "usdt-bep20", // Set default payment method
     txid: "",
   })
-  const [selectedMethod, setSelectedMethod] = useState<(typeof PAYMENT_METHODS)[0] | null>(null)
+  const [selectedMethod, setSelectedMethod] = useState<(typeof PAYMENT_METHODS)[0] | null>(PAYMENT_METHODS[0]) // Set default selected method
   const [price, setPrice] = useState<number | null>(null)
   const [showCopied, setShowCopied] = useState(false)
 
@@ -271,7 +271,7 @@ export default function BuyPage() {
         challenge_type: "",
         account_size: "",
         platform: "",
-        payment_method: "",
+        payment_method: "usdt-bep20", // Reset to default payment method
         txid: "",
       })
 
@@ -556,11 +556,32 @@ export default function BuyPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-4">
                         <Label className="text-lg font-medium text-white">
-                          Select Payment Method <span className="text-orange-500">*</span>
+                          Payment Method <span className="text-orange-500">*</span>
                         </Label>
-                        <Select onValueChange={handleCoinSelect} value={formData.payment_method} required>
+                        
+                        {/* Show default payment method */}
+                        <div className="p-4 bg-gray-900/50 rounded-xl border border-blue-500/10">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden">
+                              <Image
+                                src={PAYMENT_METHODS[0].image}
+                                alt={PAYMENT_METHODS[0].label}
+                                width={40}
+                                height={40}
+                                className="object-cover"
+                              />
+                            </div>
+                            <div>
+                              <p className="font-medium text-white">{PAYMENT_METHODS[0].label}</p>
+                              <p className="text-sm text-gray-400">Default payment method</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Option to change payment method */}
+                        <Select onValueChange={handleCoinSelect} value={formData.payment_method}>
                           <SelectTrigger className="h-14 bg-gray-900/50 border-blue-500/20 rounded-xl text-white">
-                            <SelectValue placeholder="Choose payment method" />
+                            <SelectValue placeholder="Change payment method" />
                           </SelectTrigger>
                           <SelectContent className="bg-gray-900 border-blue-500/20 text-white">
                             {PAYMENT_METHODS.map((method) => (
@@ -568,7 +589,7 @@ export default function BuyPage() {
                                 <div className="flex items-center gap-3 py-1">
                                   <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center overflow-hidden">
                                     <Image
-                                      src={method.image || "/placeholder.svg"}
+                                      src={method.image}
                                       alt={method.label}
                                       width={32}
                                       height={32}
@@ -751,4 +772,3 @@ export default function BuyPage() {
     </div>
   )
 }
-
