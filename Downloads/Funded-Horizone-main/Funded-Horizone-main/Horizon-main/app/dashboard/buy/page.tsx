@@ -25,6 +25,7 @@ import {
   Zap,
   Award,
   BadgeCheck,
+  Sparkles,
 } from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import Image from "next/image"
@@ -86,57 +87,57 @@ interface ChallengeType {
 const CHALLENGE_TYPES: Record<string, ChallengeType> = {
   "HFT Neo": {
     value: "HFT Neo",
-    label: "HFT Neo",
+    label: "HFT Neo (30-60% OFF)",
     description: "Advanced high-frequency trading program with institutional tools",
     features: ["Advanced algorithms", "Low latency execution", "Professional support"],
     prices: {
-      "1000": 14,
-      "3000": 28,
-      "5000": 40,
-      "10000": 68,
-      "25000": 133,
-      "50000": 79,
-      "100000": 136,
-      "200000": 498,
-      "500000": 992,
+      "1000": 16,
+      "3000": 27,
+      "5000": 37,
+      "10000": 61,
+      "25000": 132,
+      "50000": 105,
+      "100000": 159,
+      "200000": 231,
+      "500000": 440
     },
     icon: <Zap className="h-5 w-5" />,
     color: "from-purple-500 to-blue-500",
   },
   "One-Step": {
     value: "One-Step",
-    label: "One-Step",
+    label: "One-Step (30-60% OFF)",
     description: "Intermediate level challenge with balanced risk parameters",
     features: ["Flexible trading style", "Moderate risk limits", "Weekly payouts"],
     prices: {
-      "1000": 10,
-      "3000": 19,
-      "5000": 29,
+      "1000": 12,
+      "3000": 20,
+      "5000": 28,
       "10000": 47,
-      "25000": 91,
-      "50000": 64,
-      "100000": 112,
-      "200000": 371,
-      "500000": 693,
+      "25000": 104,
+      "50000": 77,
+      "100000": 119,
+      "200000": 176,
+      "500000": 319
     },
     icon: <Award className="h-5 w-5" />,
     color: "from-orange-500 to-amber-500",
   },
   "Two-Step": {
     value: "Two-Step",
-    label: "Two-Step",
+    label: "Two-Step (30-60% OFF)",
     description: "Entry level program perfect for beginning your journey",
     features: ["Basic analysis tools", "Conservative risk limits", "Learning resources"],
     prices: {
-      "1000": 7,
-      "3000": 14,
-      "5000": 19,
-      "10000": 31,
-      "25000": 54,
-      "50000": 47,
-      "100000": 79,
-      "200000": 274,
-      "500000": 499,
+      "1000": 10,
+      "3000": 15,
+      "5000": 22,
+      "10000": 36,
+      "25000": 71,
+      "50000": 65,
+      "100000": 96,
+      "200000": 140,
+      "500000": 276
     },
     icon: <BadgeCheck className="h-5 w-5" />,
     color: "from-green-500 to-emerald-500",
@@ -151,8 +152,8 @@ export default function BuyPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [timeLeft, setTimeLeft] = useState({
-    days: 5,
-    hours: 3,
+    days: 10,
+    hours: 0,
     minutes: 0,
     seconds: 0,
   })
@@ -310,6 +311,14 @@ export default function BuyPage() {
             className="text-center mb-8 md:mb-12"
           >
             <div className="relative mb-6">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 mb-4"
+              >
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 animate-pulse" />
+                <span className="text-sm sm:text-base text-green-200 font-semibold tracking-wide">Eid Special Offer</span>
+              </motion.div>
               <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-orange-400 to-blue-400 bg-clip-text text-transparent">
                 Funded Horizon
               </h1>
@@ -332,7 +341,7 @@ export default function BuyPage() {
               <div className="bg-gradient-to-r from-blue-500/20 to-orange-500/20 backdrop-blur-sm rounded-xl px-6 py-3 text-lg md:text-xl text-white font-semibold flex items-center shadow-lg border border-blue-500/10">
                 <Timer className="mr-2 h-5 w-5 text-orange-400" />
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-orange-400">
-                  Sale ends in: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+                  Eid Special Sale ends in: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
                 </span>
               </div>
             </div>
